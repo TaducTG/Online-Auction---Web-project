@@ -1,4 +1,3 @@
-import uploadImage from '../services/cloudinaryService.js';
 import Product from '../models/product.js';
 import mongoose from "mongoose"
 import { connectDB } from '../connection.js'
@@ -7,38 +6,73 @@ import { connectDB } from '../connection.js'
 export const createAuction = async (req, res) => {
     try {
         await connectDB();
+        
+        console.log('=== CREATE AUCTION REQUEST ===');
+        console.log('User:', req.user);
+        console.log('Body:', req.body);
+        console.log('File:', req.file);
+        
         const { itemName, startingPrice, itemDescription, itemCategory, itemStartDate, itemEndDate } = req.body;
-        let imageUrl = '';
-
-        if (req.file) {
-            try {
-                imageUrl = await uploadImage(req.file);
-            } catch (error) {
-                return res.status(500).json({ message: 'Error uploading image to Cloudinary', error: error.message });
-            }
+        
+        // Validate required fields
+        if (!itemName || !startingPrice || !itemDescription || !itemCategory || !itemEndDate) {
+            console.log('Missing fields validation failed');
+            return res.status(400).json({ message: 'Missing required fields: itemName, startingPrice, itemDescription, itemCategory, itemEndDate are required' });
         }
+
+        if (!req.file) {
+            console.log('No file uploaded');
+            return res.status(400).json({ message: 'Item photo is required' });
+        }
+
+        if (!req.user || !req.user.id) {
+            console.log('User authentication failed, req.user:', req.user);
+            return res.status(401).json({ message: 'Authentication required' });
+        }
+
+        // Construct image URL from file path
+        const imageUrl = req.file.path;
+        
+        console.log('Image URL:', imageUrl);
 
         const start = itemStartDate ? new Date(itemStartDate) : new Date();
         const end = new Date(itemEndDate);
+        
+        console.log('Start Date:', start);
+        console.log('End Date:', end);
+        
         if (end <= start) {
+            console.log('Invalid date range');
             return res.status(400).json({ message: 'Auction end date must be after start date' });
         }
 
+        // Ensure seller is a valid ObjectId
+        const sellerId = new mongoose.Types.ObjectId(req.user.id);
+        
         const newAuction = new Product({
-            itemName,
-            startingPrice,
-            currentPrice: startingPrice,
-            itemDescription,
-            itemCategory,
+            itemName: String(itemName).trim(),
+            startingPrice: Number(startingPrice),
+            currentPrice: Number(startingPrice),
+            itemDescription: String(itemDescription).trim(),
+            itemCategory: String(itemCategory).trim(),
             itemPhoto: imageUrl,
             itemStartDate: start,
             itemEndDate: end,
-            seller: req.user.id,
+            seller: sellerId,
         });
-        await newAuction.save();
+        
+        console.log('New Auction Object:', newAuction);
+        
+        const savedAuction = await newAuction.save();
+        
+        console.log('Auction created successfully:', savedAuction._id);
 
-        res.status(201).json({ message: 'Auction created successfully', newAuction });
+        res.status(201).json({ message: 'Auction created successfully', newAuction: savedAuction });
     } catch (error) {
+        console.error('=== CREATE AUCTION ERROR ===');
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Full error:', error);
         res.status(500).json({ message: 'Error creating auction', error: error.message });
     }
 };

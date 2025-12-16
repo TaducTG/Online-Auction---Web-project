@@ -22,6 +22,7 @@ export const CreateAuction = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: createAuction,
     onSuccess: (data) => {
+      console.log("API Response:", data);
       setFormData({
         itemName: "",
         itemDescription: "",
@@ -37,10 +38,17 @@ export const CreateAuction = () => {
       queryClient.invalidateQueries({ queryKey: ["myauctions"] });
       queryClient.invalidateQueries({ queryKey: ["stats"] });
 
-      navigate(`/auction/${data.newAuction._id}`);
+      if (data && data.newAuction && data.newAuction._id) {
+        navigate(`/auction/${data.newAuction._id}`);
+      } else {
+        console.error("Invalid response structure:", data);
+        setError("Auction created but unable to navigate. Please check your auctions list.");
+      }
     },
-    onError: (error) =>
-      setError(error?.response?.data?.message || "Something went wrong"),
+    onError: (error) => {
+      console.log("Error at line 43:", error);
+      setError(error?.response?.data?.message || "Something went wrong");
+    },
   });
 
   const categories = [

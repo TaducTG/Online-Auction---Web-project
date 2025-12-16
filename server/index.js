@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import path from 'path';
+import { fileURLToPath } from 'url';
 dotenv.config();
 import { connectDB } from './connection.js'
 import auctionRouter from './routes/auction.js';
@@ -10,6 +12,9 @@ import userAuthRouter from './routes/userAuth.js';
 import userRouter from './routes/user.js';
 import contactRouter from "./routes/contact.js";
 import adminRouter from './routes/admin.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const port = process.env.PORT || 4000;
 
@@ -24,6 +29,8 @@ app.use(cors({
     credentials: true,
 }));
 
+// Serve static files from uploads folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', async (req, res) => {
     res.json({ msg: 'Welcome to Online Auction System API' });

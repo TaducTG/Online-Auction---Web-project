@@ -78,6 +78,7 @@ export const createAuction = async (data) => {
         return res.data;
     } catch (error) {
         console.log("Error creating auction", error.message);
+        throw error;
     }
 }
 
