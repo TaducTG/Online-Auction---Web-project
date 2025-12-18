@@ -14,6 +14,18 @@ export const changePassword = async (formData) => {
     }
 }
 
+export const updateProfile = async (formData) => {
+    try {
+        const res = await axios.put(`${VITE_API}/user/profile`,
+            formData,
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error) {
+        console.log(error?.response?.data?.error || "Can't update profile")
+        throw error;
+    }
+}
 
 export const loginHistory = async () => {
     try {

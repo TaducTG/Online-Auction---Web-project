@@ -8,7 +8,7 @@ import { connectDB } from '../connection.js'
 export const handleGetUser = async (req, res) => {
     try {
         await connectDB();
-        const user = await User.findById(req.user.id).select("name email avatar role");
+        const user = await User.findById(req.user.id).select("name email avatar role phone address bio");
 
         if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -121,3 +121,55 @@ function getDeviceType(userAgent = "") {
     if (/tablet|ipad|android(?!.*mobile)/.test(userAgent)) return "Tablet";
     return "Desktop";
 }
+
+export const handleUpdateProfile = async (req, res) => {
+    try {
+        await connectDB();
+        const userId = req.user.id;
+        const { name, phone, address, bio } = req.body;
+
+        // Validate name
+        if (name && name.trim().length < 2) {
+            return res.status(400).json({ error: "Name must be at least 2 characters long" });
+        }
+
+        // Validate phone (optional: basic validation)
+        if (phone && !/^\+?[\d\s\-()]+$/.test(phone)) {
+            return res.status(400).json({ error: "Invalid phone number format" });
+        }
+
+        // Build update object
+        const updateData = {};
+        if (name) updateData.name = name.trim();
+        if (phone !== undefined) updateData.phone = phone.trim();
+        if (bio !== undefined) updateData.bio = bio.trim();
+        if (address) {
+            updateData.address = {
+                street: address.street || '',
+                city: address.city || '',
+                state: address.state || '',
+                zipCode: address.zipCode || '',
+                country: address.country || ''
+            };
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).select("name email avatar role phone address bio");
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(200).json({ 
+            message: "Profile updated successfully",
+            user: updatedUser 
+        });
+
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        res.status(500).json({ error: "Something went wrong. Please try again later." });
+    }
+};
