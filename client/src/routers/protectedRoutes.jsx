@@ -6,6 +6,7 @@ import { CreateAuction } from "../pages/CreateAuction";
 import { MyAuction } from "../pages/MyAuction";
 import Profile from "../pages/Profile";
 import Privacy from "../pages/Privacy";
+import Messages from "../pages/Messages";
 
 export const protectedRoutes = [
   {
@@ -42,6 +43,11 @@ export const protectedRoutes = [
       {
         path: "privacy",
         element: <Privacy />,
+        errorElement: <Error />,
+      },
+      {
+        path: "messages",
+        element: <Messages />,
         errorElement: <Error />,
       },
     ],

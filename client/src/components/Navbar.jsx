@@ -12,6 +12,7 @@ import {
   MdOutlineHome,
   MdOutlinePrivacyTip,
   MdAdminPanelSettings,
+  MdNotifications,
 } from "react-icons/md";
 import {
   IoCloseSharp,
@@ -287,6 +288,11 @@ const protectedNavLink = [
     name: "My Auction",
     link: "/myauction",
     icon: <MdAttachMoney className="mr-3 h-5 w-5" />,
+  },
+  {
+    name: "Messages",
+    link: "/messages",
+    icon: <MdNotifications className="mr-3 h-5 w-5" />,
   },
   {
     name: "Contact",

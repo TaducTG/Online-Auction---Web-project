@@ -12,6 +12,7 @@ import userAuthRouter from './routes/userAuth.js';
 import userRouter from './routes/user.js';
 import contactRouter from "./routes/contact.js";
 import adminRouter from './routes/admin.js';
+import notificationRouter from './routes/notification.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +41,7 @@ app.use('/user', secureRoute, userRouter)
 app.use('/auction', secureRoute, auctionRouter);
 app.use('/contact', contactRouter);
 app.use('/admin', secureRoute, adminRouter)
+app.use('/notifications', secureRoute, notificationRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
