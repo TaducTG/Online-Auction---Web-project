@@ -1,4 +1,5 @@
 import Product from '../models/product.js';
+import Notification from '../models/notification.js';
 import mongoose from "mongoose"
 import { connectDB } from '../connection.js'
 
@@ -133,6 +134,9 @@ export const placeBid = async (req, res) => {
         if (bidAmount < minBid) return res.status(400).json({ message: `Bid must be at least Rs ${minBid}` })
         if (bidAmount > maxBid) return res.status(400).json({ message: `Bid must be at max Rs ${maxBid}` })
 
+        // Get previous highest bidder before updating
+        const previousBidder = product.bids.length > 0 ? product.bids[product.bids.length - 1].bidder : null;
+
         product.bids.push({
             bidder: user,
             bidAmount: bidAmount,
@@ -140,6 +144,31 @@ export const placeBid = async (req, res) => {
 
         product.currentPrice = bidAmount;
         await product.save();
+
+        // Create notification for previous bidder (outbid)
+        if (previousBidder && previousBidder._id.toString() !== user) {
+            await Notification.create({
+                recipient: previousBidder._id,
+                type: 'outbid',
+                auction: id,
+                actor: user,
+                title: 'Outbid!',
+                message: `Someone placed a higher bid on "${product.itemName}". New bid: Rs ${bidAmount}`
+            });
+        }
+
+        // Create notification for seller (bid placed)
+        if (product.seller.toString() !== user) {
+            await Notification.create({
+                recipient: product.seller,
+                type: 'bid',
+                auction: id,
+                actor: user,
+                title: 'New Bid Placed',
+                message: `Someone bid on your "${product.itemName}". New bid: Rs ${bidAmount}`
+            });
+        }
+
         res.status(200).json({ message: "Bid placed successfully" });
     } catch (error) {
         res.status(500).json({ message: "Error placing bid", error: error.message })
