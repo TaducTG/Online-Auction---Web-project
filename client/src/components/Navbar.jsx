@@ -20,6 +20,7 @@ import {
   IoLogOutOutline,
 } from "react-icons/io5";
 import { RiAuctionLine } from "react-icons/ri";
+import { NotificationDropdown } from "./NotificationDropdown";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
@@ -79,15 +80,21 @@ export const Navbar = () => {
               ))}
             </nav>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={toggleMenu}
-              className="text-gray-600 hover:text-gray-900 focus:outline-none"
-              aria-expanded={isMenuOpen}
-              aria-label="Toggle menu"
-            >
-              <MdMenuOpen className="h-6 w-6" />
-            </button>
+            {/* Right side icons - Notification and Menu */}
+            <div className="flex items-center gap-2">
+              {/* Notification Dropdown - only show when user is logged in */}
+              {user && <NotificationDropdown />}
+              
+              {/* Mobile Menu Button */}
+              <button
+                onClick={toggleMenu}
+                className="text-gray-600 hover:text-gray-900 focus:outline-none"
+                aria-expanded={isMenuOpen}
+                aria-label="Toggle menu"
+              >
+                <MdMenuOpen className="h-6 w-6" />
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -170,7 +177,7 @@ export const Navbar = () => {
           {user ? (
             <div className="mt-6 pt-6 border-t border-gray-200 ">
               <ul className="space-y-4">
-                {protectedNavLink.slice(4, 7).map((item) => (
+                {protectedNavLink.slice(3, 6).map((item) => (
                   <li key={item.link}>
                     <NavLink
                       to={item.link}
@@ -288,11 +295,6 @@ const protectedNavLink = [
     name: "My Auction",
     link: "/myauction",
     icon: <MdAttachMoney className="mr-3 h-5 w-5" />,
-  },
-  {
-    name: "Messages",
-    link: "/messages",
-    icon: <MdNotifications className="mr-3 h-5 w-5" />,
   },
   {
     name: "Contact",
