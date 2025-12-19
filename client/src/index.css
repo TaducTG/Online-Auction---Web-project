@@ -1,1 +1,107 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ============================================
+   PHASE 1: DESIGN FOUNDATION
+   ============================================ */
+
+/* Base Styles */
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Smooth Transitions */
+* {
+    transition-property: color, background-color, border-color, box-shadow, transform;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Remove transition from specific elements */
+input,
+textarea,
+select {
+    transition: none;
+}
+
+/* Better focus states */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+    outline: none;
+    transition: all 200ms ease;
+}
+
+/* ============================================
+   DARK MODE STYLES
+   ============================================ */
+
+.dark {
+    color-scheme: dark;
+}
+
+.dark body {
+    background-color: #1a1a1a;
+    color: #e5e5e5;
+}
+
+.dark .bg-white {
+    background-color: #2d2d2d !important;
+}
+
+.dark .bg-gray-50 {
+    background-color: #1a1a1a !important;
+}
+
+.dark .text-gray-900 {
+    color: #e5e5e5 !important;
+}
+
+.dark .text-gray-600 {
+    color: #a3a3a3 !important;
+}
+
+.dark .text-gray-500 {
+    color: #737373 !important;
+}
+
+.dark .border-gray-200 {
+    border-color: #404040 !important;
+}
+
+.dark .border-gray-300 {
+    border-color: #525252 !important;
+}
+
+.dark .shadow-sm,
+.dark .shadow-md,
+.dark .shadow-lg {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+/* Dark mode form inputs */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #374151 !important;
+  color: #e5e5e5 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #3b82f6 !important;
+  ring-color: #3b82f6 !important;
+}

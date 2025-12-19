@@ -13,6 +13,8 @@ import {
   MdOutlinePrivacyTip,
   MdAdminPanelSettings,
   MdNotifications,
+  MdDarkMode,
+  MdLightMode,
 } from "react-icons/md";
 import {
   IoCloseSharp,
@@ -25,7 +27,25 @@ export const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
   const { user } = useSelector((state) => state.auth);
+
+  // Dark mode toggle
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('darkMode', 'true');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('darkMode', 'false');
+    }
+  }, [isDark]);
+
+  const toggleDarkMode = () => {
+    setIsDark(!isDark);
+  };
 
   // User logout
   const handleLogout = () => {
@@ -77,6 +97,19 @@ export const Navbar = () => {
                   {item.name}
                 </NavLink>
               ))}
+
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                {isDark ? (
+                  <MdLightMode className="h-5 w-5 text-yellow-500" />
+                ) : (
+                  <MdDarkMode className="h-5 w-5 text-gray-600" />
+                )}
+              </button>
             </nav>
 
             {/* Mobile Menu Button */}
@@ -94,17 +127,15 @@ export const Navbar = () => {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${
-          isMenuOpen ? "opacity-70" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${isMenuOpen ? "opacity-70" : "opacity-0 pointer-events-none"
+          }`}
         onClick={() => setIsMenuOpen(false)}
       />
 
       <div
         className={`fixed top-0 right-0 h-full w-72 
           bg-gradient-to-b from-blue-100 via-blue-300 to-blue-600
-          shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-            isMenuOpen ? "translate-x-0" : "translate-x-full"
+          shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-200">

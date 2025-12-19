@@ -14,29 +14,29 @@ const Dashboard = () => {
   if (isLoading) return <LoadingScreen />;
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 min-h-screen">
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-200">
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
             <h3 className="text-sm font-medium text-gray-500">
               Total Auctions
             </h3>
-            <p className="text-2xl font-bold text-gray-900 mt-1">
+            <p className="text-3xl font-bold text-gray-900 mt-2">
               {data.totalAuctions}
             </p>
           </div>
-          <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-200">
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
             <h3 className="text-sm font-medium text-gray-500">
               Active Auctions
             </h3>
-            <p className="text-2xl font-bold text-green-600 mt-1">
+            <p className="text-3xl font-bold text-green-600 mt-2">
               {data.activeAuctions}
             </p>
           </div>
-          <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-200">
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
             <h3 className="text-sm font-medium text-gray-500">Your Auctions</h3>
-            <p className="text-2xl font-bold text-blue-600 mt-1">
+            <p className="text-3xl font-bold text-blue-600 mt-2">
               {data.userAuctionCount}
             </p>
           </div>
@@ -55,10 +55,12 @@ const Dashboard = () => {
           </div>
 
           {data.latestAuctions.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-sm shadow-sm border border-gray-200">
-              <p className="text-gray-500 text-lg">
+            <div className="text-center py-16 bg-white rounded-lg shadow-md border border-gray-200">
+              <div className="text-6xl mb-4">🏷️</div>
+              <p className="text-gray-500 text-lg font-medium mb-2">
                 No auctions available at the moment.
               </p>
+              <p className="text-gray-400 text-sm">Check back later for new listings!</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-4">
@@ -82,12 +84,13 @@ const Dashboard = () => {
           </div>
 
           {data.latestUserAuctions.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-sm shadow-sm border border-gray-200">
-              <p className="text-gray-500 text-lg">
+            <div className="text-center py-16 bg-white rounded-lg shadow-md border border-gray-200">
+              <div className="text-6xl mb-4">📦</div>
+              <p className="text-gray-500 text-lg font-medium mb-4">
                 You haven't created any auctions yet.
-              </p>{" "}
+              </p>
               <Link to="/create">
-                <button className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-sm hover:bg-blue-700 transition-colors">
+                <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg font-medium">
                   Create Your First Auction
                 </button>
               </Link>

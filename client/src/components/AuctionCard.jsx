@@ -3,14 +3,14 @@ import { Link } from "react-router";
 export default function AuctionCard({ auction }) {
   const daysLeft = Math.ceil(auction.timeLeft / (1000 * 60 * 60 * 24));
   return (
-    <div className="bg-white border border-gray-200 rounded-md shadow-sm">
-      <div className="relative h-48 overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+      <div className="relative h-48 overflow-hidden rounded-t-lg">
         <img
           src={auction.itemPhoto || "https://picsum.photos/300"}
           alt={auction.itemName}
           className="object-contain aspect-[4/3] w-96"
         />
-        <div className="absolute top-2 right-2 bg-blue-200 px-2 py-1 rounded-md text-xs font-medium">
+        <div className="absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-md">
           {auction.itemCategory}
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function AuctionCard({ auction }) {
             Seller: {auction?.sellerName || auction?.seller?.name}
           </p>
           <Link to={`/auction/${auction._id}`}>
-            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
+            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
               View Details
             </button>
           </Link>
