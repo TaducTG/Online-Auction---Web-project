@@ -36,11 +36,10 @@ export const MyAuction = () => {
               <button
                 key={category}
                 onClick={() => setFilter(category)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  filter === category
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${filter === category
                     ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                }`}
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  }`}
               >
                 {category.charAt(0).toUpperCase() + category.slice(1)}
               </button>
