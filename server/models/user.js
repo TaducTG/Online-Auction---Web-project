@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    balance: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
      role: {
         type: String,
         enum: ['user', 'admin'],

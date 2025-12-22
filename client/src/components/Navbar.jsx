@@ -15,6 +15,7 @@ import {
   MdNotifications,
   MdDarkMode,
   MdLightMode,
+  MdAccountBalanceWallet,
 } from "react-icons/md";
 import {
   IoCloseSharp,
@@ -208,7 +209,7 @@ export const Navbar = () => {
           {user ? (
             <div className="mt-6 pt-6 border-t border-gray-200 ">
               <ul className="space-y-4">
-                {protectedNavLink.slice(3, 6).map((item) => (
+                {protectedNavLink.slice(3, 7).map((item) => (
                   <li key={item.link}>
                     <NavLink
                       to={item.link}
@@ -328,6 +329,11 @@ const protectedNavLink = [
     icon: <MdAttachMoney className="mr-3 h-5 w-5" />,
   },
   {
+    name: "Wallet",
+    link: "/wallet",
+    icon: <MdAccountBalanceWallet className="mr-3 h-5 w-5" />,
+  },
+  {
     name: "Contact",
     link: "/contact",
     icon: <MdMailOutline className="mr-3 h-5 w-5" />,
@@ -372,5 +378,5 @@ const getNavLinks = (userRole) => {
   if (userRole === 'admin') {
     return adminNavLink;
   }
-  return protectedNavLink.slice(0, 4);
+  return protectedNavLink.slice(0, 5);
 };

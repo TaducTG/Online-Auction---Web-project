@@ -38,3 +38,28 @@ export const loginHistory = async () => {
         throw error;
     }
 }
+
+export const getUser = async () => {
+    try {
+        const res = await axios.get(`${VITE_API}/user`,
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error) {
+        console.log(error?.response?.data?.error || "Can't fetch user")
+        throw error;
+    }
+}
+
+export const topUpBalance = async (data) => {
+    try {
+        const res = await axios.post(`${VITE_API}/user/topup`,
+            data,
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error) {
+        console.log(error?.response?.data?.error || "Can't top-up balance")
+        throw error;
+    }
+}

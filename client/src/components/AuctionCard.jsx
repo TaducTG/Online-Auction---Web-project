@@ -1,5 +1,7 @@
 import { Link } from "react-router";
 
+const formatVND = (value) => `${Number(value ?? 0).toLocaleString("vi-VN")} VND`;
+
 export default function AuctionCard({ auction }) {
   const daysLeft = Math.ceil(auction.timeLeft / (1000 * 60 * 60 * 24));
   return (
@@ -27,7 +29,7 @@ export default function AuctionCard({ auction }) {
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-500">Current Price:</span>
             <span className="font-semibold text-lg text-green-600">
-              ${auction.currentPrice || auction.startingPrice}
+              {formatVND(auction.currentPrice || auction.startingPrice)}
             </span>
           </div>
 

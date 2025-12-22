@@ -7,6 +7,7 @@ import { MyAuction } from "../pages/MyAuction";
 import Profile from "../pages/Profile";
 import Privacy from "../pages/Privacy";
 import Messages from "../pages/Messages";
+import Wallet from "../pages/Wallet";
 
 export const protectedRoutes = [
   {
@@ -48,6 +49,11 @@ export const protectedRoutes = [
       {
         path: "messages",
         element: <Messages />,
+        errorElement: <Error />,
+      },
+      {
+        path: "wallet",
+        element: <Wallet />,
         errorElement: <Error />,
       },
     ],

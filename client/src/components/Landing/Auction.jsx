@@ -2,6 +2,8 @@ import { FaClock, FaArrowRight, FaChevronRight } from "react-icons/fa";
 import { Link } from "react-router";
 // import { AdsComponent } from "../AdsComponent";
 
+const formatVND = (value) => `${Number(value ?? 0).toLocaleString("vi-VN")} VND`;
+
 export const Auction = () => {
   return (
     <section className="py-20 bg-white">
@@ -37,7 +39,7 @@ export const Auction = () => {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">$245.00</p>
+                  <p className="text-lg font-bold text-gray-900">{formatVND(245000)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Bids</p>
@@ -72,7 +74,7 @@ export const Auction = () => {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">$1,250.00</p>
+                  <p className="text-lg font-bold text-gray-900">{formatVND(1250000)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Bids</p>
@@ -107,7 +109,7 @@ export const Auction = () => {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="text-lg font-bold text-gray-900">$890.00</p>
+                  <p className="text-lg font-bold text-gray-900">{formatVND(890000)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Bids</p>

@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 export const handleGetUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select(
-      "name email avatar role phone address bio"
+      "name email avatar role phone address bio balance"
     );
 
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -165,7 +165,7 @@ export const handleUpdateProfile = async (req, res) => {
       userId,
       { $set: updateData },
       { new: true, runValidators: true }
-    ).select("name email avatar role phone address bio");
+    ).select("name email avatar role phone address bio balance");
 
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
@@ -180,5 +180,32 @@ export const handleUpdateProfile = async (req, res) => {
     res
       .status(500)
       .json({ error: "Something went wrong. Please try again later." });
+  }
+};
+
+export const handleTopUp = async (req, res) => {
+  try {
+    const { amount } = req.body;
+    const topUpAmount = Number(amount);
+
+    if (!Number.isFinite(topUpAmount) || topUpAmount <= 0) {
+      return res.status(400).json({ error: "So tien nap khong hop le" });
+    }
+
+    const updated = await User.findByIdAndUpdate(
+      req.user.id,
+      { $inc: { balance: topUpAmount } },
+      { new: true }
+    ).select("name email avatar role phone address bio balance");
+
+    if (!updated) return res.status(404).json({ error: "User not found" });
+
+    return res.status(200).json({
+      message: "Nap tien thanh cong",
+      user: updated,
+    });
+  } catch (error) {
+    console.error("Top-up error:", error);
+    return res.status(500).json({ error: "Server error" });
   }
 };
