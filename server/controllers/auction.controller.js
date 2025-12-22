@@ -1,5 +1,6 @@
 import Product from '../models/product.js';
 import Notification from '../models/notification.js';
+import User from '../models/user.js';
 import mongoose from "mongoose"
 import { connectDB } from '../connection.js'
 
@@ -158,50 +159,86 @@ export const placeBid = async (req, res) => {
     if (new Date(product.itemEndDate) < new Date())
       return res.status(400).json({ message: "Auction has already ended" });
 
-        const minBid = Math.max(product.currentPrice, product.startingPrice) + 1;
-        const maxBid = Math.max(product.currentPrice, product.startingPrice) + 10;
-        if (bidAmount < minBid) return res.status(400).json({ message: `Bid must be at least Rs ${minBid}` })
-        if (bidAmount > maxBid) return res.status(400).json({ message: `Bid must be at max Rs ${maxBid}` })
+    const amount = Number(bidAmount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return res.status(400).json({ message: "Gia bid khong hop le" });
+    }
+    
+    if (!Number.isInteger(amount)) {
+      return res.status(400).json({ message: "Gia bid phai la so nguyen" });
+    }
 
-        // Get previous highest bidder before updating
-        const previousBidder = product.bids.length > 0 ? product.bids[product.bids.length - 1].bidder : null;
+    const bidder = await User.findById(user).select("balance");
+    if (!bidder) return res.status(404).json({ message: "User not found" });
+
+    const base = Number(product.startingPrice);
+    const currentPrice = Number(product.currentPrice);
+    
+    // Min bid: current price + 80% of starting price, min must be at least currentPrice + 1
+    // Max bid: current price + 500% of starting price
+    const minBid = Math.max(currentPrice + 1, Math.ceil(currentPrice + base * 0.8));
+    const maxBid = Math.floor(currentPrice + base * 5);
+
+    if (minBid > maxBid) {
+      return res.status(400).json({ message: "Khong the dat bid cao hon voi quy tac hien tai" });
+    }
+
+    if (amount < minBid) {
+      return res
+        .status(400)
+        .json({ message: `Bid toi thieu: ${minBid.toLocaleString("vi-VN")} VND` });
+    }
+    if (amount > maxBid) {
+      return res
+        .status(400)
+        .json({ message: `Bid toi da: ${maxBid.toLocaleString("vi-VN")} VND` });
+    }
+    if (amount > bidder.balance) {
+      return res.status(400).json({
+        message: `So du khong du (so du: ${bidder.balance.toLocaleString("vi-VN")} VND)`,
+      });
+    }
+
+    // Get previous highest bidder before updating
+    const previousBidder =
+      product.bids.length > 0 ? product.bids[product.bids.length - 1].bidder : null;
 
     product.bids.push({
       bidder: user,
-      bidAmount: bidAmount,
+      bidAmount: amount,
     });
 
-        product.currentPrice = bidAmount;
-        await product.save();
+    product.currentPrice = amount;
+    await product.save();
 
-        // Create notification for previous bidder (outbid)
-        if (previousBidder && previousBidder._id.toString() !== user) {
-            await Notification.create({
-                recipient: previousBidder._id,
-                type: 'outbid',
-                auction: id,
-                actor: user,
-                title: 'Outbid!',
-                message: `Someone placed a higher bid on "${product.itemName}". New bid: Rs ${bidAmount}`
-            });
-        }
-
-        // Create notification for seller (bid placed)
-        if (product.seller.toString() !== user) {
-            await Notification.create({
-                recipient: product.seller,
-                type: 'bid',
-                auction: id,
-                actor: user,
-                title: 'New Bid Placed',
-                message: `Someone bid on your "${product.itemName}". New bid: Rs ${bidAmount}`
-            });
-        }
-
-        res.status(200).json({ message: "Bid placed successfully" });
-    } catch (error) {
-        res.status(500).json({ message: "Error placing bid", error: error.message })
+    // Create notification for previous bidder (outbid)
+    if (previousBidder && previousBidder._id.toString() !== user) {
+      await Notification.create({
+        recipient: previousBidder._id,
+        type: 'outbid',
+        auction: id,
+        actor: user,
+        title: 'Outbid!',
+        message: `Co nguoi dat bid cao hon cho "${product.itemName}". Bid moi: ${amount.toLocaleString("vi-VN")} VND`
+      });
     }
+
+    // Create notification for seller (bid placed)
+    if (product.seller.toString() !== user) {
+      await Notification.create({
+        recipient: product.seller,
+        type: 'bid',
+        auction: id,
+        actor: user,
+        title: 'New Bid Placed',
+        message: `Co nguoi bid san pham "${product.itemName}". Bid moi: ${amount.toLocaleString("vi-VN")} VND`
+      });
+    }
+
+    res.status(200).json({ message: "Bid placed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error placing bid", error: error.message })
+  }
 }
 
 export const dashboardData = async (req, res) => {

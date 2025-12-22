@@ -1,15 +1,20 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useParams, Link } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { placeBid, viewAuction } from "../api/auction.js";
 import { useSelector } from "react-redux";
 import LoadingScreen from "../components/LoadingScreen.jsx";
+import { FaCheck, FaTimes } from "react-icons/fa";
+
+const formatVND = (value) => `${Number(value ?? 0).toLocaleString("vi-VN")} VND`;
 
 export const ViewAuction = () => {
   const { id } = useParams();
   const { user } = useSelector((state) => state.auth);
   const queryClient = useQueryClient();
   const inputRef = useRef();
+  const [bidError, setBidError] = useState(null);
+  const [bidSuccess, setBidSuccess] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["viewAuctions", id],
@@ -21,15 +26,29 @@ export const ViewAuction = () => {
   const placeBidMutate = useMutation({
     mutationFn: ({ bidAmount, id }) => placeBid({ bidAmount, id }),
     onSuccess: () => {
+      setBidError(null);
+      setBidSuccess(true);
+      setTimeout(() => setBidSuccess(false), 3000);
       queryClient.invalidateQueries({ queryKey: ["viewAuctions"] });
       if (inputRef.current) inputRef.current.value = "";
     },
     onError: (error) => {
-      console.log("Error: ", error.message);
+      const message = error?.response?.data?.message || error.message || "Dat bid that bai";
+      setBidError(message);
+      setBidSuccess(false);
     },
   });
 
   if (isLoading) return <LoadingScreen />;
+
+  const basePrice = data?.startingPrice || 0;
+  const currentPrice = data?.currentPrice || basePrice;
+  
+  // Min bid: current price + 80% of starting price (or at least +1 over current)
+  // Max bid: current price + 500% of starting price
+  const minBidValue = Math.max(currentPrice + 1, Math.ceil(currentPrice + basePrice * 0.8));
+  let maxBidValue = Math.floor(currentPrice + basePrice * 5);
+  if (maxBidValue < minBidValue) maxBidValue = minBidValue;
 
   const handleBidSubmit = (e) => {
     e.preventDefault();
@@ -88,13 +107,13 @@ export const ViewAuction = () => {
                 <div>
                   <p className="text-sm text-gray-500">Starting Price</p>
                   <p className="text-lg font-semibold text-gray-900">
-                    ${data.startingPrice}
+                    {formatVND(data.startingPrice)}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Current Price</p>
                   <p className="text-2xl font-bold text-green-600">
-                    ${data.currentPrice}
+                    {formatVND(data.currentPrice)}
                   </p>
                 </div>
               </div>
@@ -129,26 +148,40 @@ export const ViewAuction = () => {
                       htmlFor="bidAmount"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Bid Amount (minimum: ${data.currentPrice + 1} maximum: $
-                      {data.currentPrice + 10})
+                      Bid Amount (minimum: {formatVND(minBidValue)} maximum: {formatVND(maxBidValue)})
                     </label>
                     <input
                       type="number"
                       name="bidAmount"
                       id="bidAmount"
                       ref={inputRef}
-                      min={data.currentPrice + 1}
-                      max={data.currentPrice + 10}
+                      min={minBidValue}
+                      max={maxBidValue}
+                      step="1"
                       className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Enter your bid amount"
                       required
                     />
                   </div>
+                  
+                  {bidError && (
+                    <div className="p-3 bg-red-100 text-red-700 rounded-lg flex items-center gap-2">
+                      <FaTimes /> {bidError}
+                    </div>
+                  )}
+                  
+                  {bidSuccess && (
+                    <div className="p-3 bg-green-100 text-green-700 rounded-lg flex items-center gap-2">
+                      <FaCheck /> Dat bid thanh cong!
+                    </div>
+                  )}
+                  
                   <button
                     type="submit"
-                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium"
+                    disabled={placeBidMutate.isPending}
+                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                   >
-                    Place Bid
+                    {placeBidMutate.isPending ? "Dang xu ly..." : "Place Bid"}
                   </button>
                 </form>
               </div>
@@ -188,7 +221,7 @@ export const ViewAuction = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-semibold text-green-600">
-                        ${bid.bidAmount}
+                        {formatVND(bid.bidAmount)}
                       </p>
                     </div>
                   </div>
