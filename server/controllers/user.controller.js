@@ -6,15 +6,15 @@ import mongoose from "mongoose";
 export const handleGetUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select(
-      "name email avatar role phone address bio balance"
+      "name email avatar role phone address bio balance transactions"
     );
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy người dùng" });
 
     res.json({ user });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Lỗi máy chủ" });
   }
 };
 
@@ -22,25 +22,25 @@ export const handleChangePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
     if (!currentPassword || !newPassword || !confirmPassword) {
-      return res.status(400).json({ error: "Please enter all fields" });
+      return res.status(400).json({ error: "Vui lòng nhập đầy đủ các trường" });
     }
 
     if (newPassword !== confirmPassword) {
       return res
         .status(400)
-        .json({ error: "New password and confirm password do not match." });
+        .json({ error: "Mật khẩu mới và xác nhận mật khẩu không khớp" });
     }
     if (currentPassword === newPassword) {
       return res
         .status(400)
-        .json({ error: "You can't reuse the old password." });
+        .json({ error: "Bạn không thể sử dụng lại mật khẩu cũ" });
     }
 
     const userID = req.user.id;
 
     const user = await User.findById(userID);
     if (!user) {
-      return res.status(404).json({ error: "User not found." });
+      return res.status(404).json({ error: "Không tìm thấy người dùng" });
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -48,7 +48,7 @@ export const handleChangePassword = async (req, res) => {
       user.password
     );
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Current password is incorrect." });
+      return res.status(401).json({ error: "Mật khẩu hiện tại không chính xác" });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -56,12 +56,12 @@ export const handleChangePassword = async (req, res) => {
 
     await user.save();
 
-    return res.status(200).json({ message: "Password changed successfully." });
+    return res.status(200).json({ message: "Đổi mật khẩu thành công" });
   } catch (err) {
     console.error("Error changing password:", err);
     return res
       .status(500)
-      .json({ error: "Something went wrong. Please try again later." });
+      .json({ error: "Đã xảy ra lỗi. Vui lòng thử lại sau" });
   }
 };
 
@@ -116,7 +116,7 @@ export const getLoginHistory = async (req, res) => {
     console.error("Error fetching login history:", error);
     res.status(500).json({
       success: false,
-      message: "Could not fetch login logs",
+      message: "Không thể tải lịch sử đăng nhập",
     });
   }
 };
@@ -138,12 +138,12 @@ export const handleUpdateProfile = async (req, res) => {
     if (name && name.trim().length < 2) {
       return res
         .status(400)
-        .json({ error: "Name must be at least 2 characters long" });
+        .json({ error: "Tên phải có ít nhất 2 ký tự" });
     }
 
     // Validate phone (optional: basic validation)
     if (phone && !/^\+?[\d\s\-()]+$/.test(phone)) {
-      return res.status(400).json({ error: "Invalid phone number format" });
+      return res.status(400).json({ error: "Định dạng số điện thoại không hợp lệ" });
     }
 
     // Build update object
@@ -168,18 +168,18 @@ export const handleUpdateProfile = async (req, res) => {
     ).select("name email avatar role phone address bio balance");
 
     if (!updatedUser) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Không tìm thấy người dùng" });
     }
 
     res.status(200).json({
-      message: "Profile updated successfully",
+      message: "Cập nhật hồ sơ thành công",
       user: updatedUser,
     });
   } catch (error) {
     console.error("Error updating profile:", error);
     res
       .status(500)
-      .json({ error: "Something went wrong. Please try again later." });
+      .json({ error: "Đã xảy ra lỗi. Vui lòng thử lại sau" });
   }
 };
 
@@ -189,23 +189,36 @@ export const handleTopUp = async (req, res) => {
     const topUpAmount = Number(amount);
 
     if (!Number.isFinite(topUpAmount) || topUpAmount <= 0) {
-      return res.status(400).json({ error: "So tien nap khong hop le" });
+      return res.status(400).json({ error: "Số tiền nạp không hợp lệ" });
     }
 
-    const updated = await User.findByIdAndUpdate(
-      req.user.id,
-      { $inc: { balance: topUpAmount } },
-      { new: true }
-    ).select("name email avatar role phone address bio balance");
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "Không tìm thấy người dùng" });
 
-    if (!updated) return res.status(404).json({ error: "User not found" });
+    // Update balance
+    user.balance += topUpAmount;
+
+    // Add transaction to history
+    user.transactions.push({
+      type: 'topup',
+      amount: topUpAmount,
+      description: `Nạp tiền ${(topUpAmount).toLocaleString('vi-VN')} VND`,
+      balanceAfter: user.balance,
+      createdAt: new Date()
+    });
+
+    await user.save();
+
+    const updated = await User.findById(req.user.id).select(
+      "name email avatar role phone address bio balance transactions"
+    );
 
     return res.status(200).json({
-      message: "Nap tien thanh cong",
+      message: "Nạp tiền thành công",
       user: updated,
     });
   } catch (error) {
     console.error("Top-up error:", error);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Lỗi máy chủ" });
   }
 };

@@ -23,7 +23,7 @@ export const getNotifications = async (req, res) => {
         });
     } catch (error) {
         console.error("Error fetching notifications:", error);
-        res.status(500).json({ error: "Failed to fetch notifications" });
+        res.status(500).json({ error: "Không thể tải thông báo" });
     }
 };
 
@@ -39,16 +39,16 @@ export const markAsRead = async (req, res) => {
         );
 
         if (!notification) {
-            return res.status(404).json({ error: "Notification not found" });
+            return res.status(404).json({ error: "Không tìm thấy thông báo" });
         }
 
         res.status(200).json({
-            message: "Notification marked as read",
+            message: "Đánh dấu thông báo đã đọc",
             notification
         });
     } catch (error) {
         console.error("Error marking notification as read:", error);
-        res.status(500).json({ error: "Failed to mark notification as read" });
+        res.status(500).json({ error: "Không thể đánh dấu thông báo đã đọc" });
     }
 };
 
@@ -62,10 +62,10 @@ export const markAllAsRead = async (req, res) => {
             { isRead: true }
         );
 
-        res.status(200).json({ message: "All notifications marked as read" });
+        res.status(200).json({ message: "Tất cả thông báo đã được đánh dấu là đã đọc" });
     } catch (error) {
         console.error("Error marking all notifications as read:", error);
-        res.status(500).json({ error: "Failed to mark all notifications as read" });
+        res.status(500).json({ error: "Không thể đánh dấu tất cả thông báo đã đọc" });
     }
 };
 
@@ -77,13 +77,13 @@ export const deleteNotification = async (req, res) => {
         const notification = await Notification.findByIdAndDelete(notificationId);
 
         if (!notification) {
-            return res.status(404).json({ error: "Notification not found" });
+            return res.status(404).json({ error: "Không tìm thấy thông báo" });
         }
 
-        res.status(200).json({ message: "Notification deleted successfully" });
+        res.status(200).json({ message: "Xóa thông báo thành công" });
     } catch (error) {
         console.error("Error deleting notification:", error);
-        res.status(500).json({ error: "Failed to delete notification" });
+        res.status(500).json({ error: "Không thể xóa thông báo" });
     }
 };
 
@@ -94,10 +94,10 @@ export const deleteAllNotifications = async (req, res) => {
 
         await Notification.deleteMany({ recipient: userId });
 
-        res.status(200).json({ message: "All notifications deleted successfully" });
+        res.status(200).json({ message: "Xóa tất cả thông báo thành công" });
     } catch (error) {
         console.error("Error deleting all notifications:", error);
-        res.status(500).json({ error: "Failed to delete all notifications" });
+        res.status(500).json({ error: "Không thể xóa tất cả thông báo" });
     }
 };
 

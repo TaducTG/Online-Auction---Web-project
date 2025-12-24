@@ -1,5 +1,34 @@
 import mongoose from "mongoose";
 
+const transactionSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ['topup', 'bid', 'refund'],
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    description: {
+        type: String,
+        default: ''
+    },
+    balanceAfter: {
+        type: Number,
+        required: true
+    },
+    relatedAuctionId: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Product',
+        default: null
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -37,6 +66,7 @@ const userSchema = new mongoose.Schema({
         default: 0,
         min: 0
     },
+    transactions: [transactionSchema],
      role: {
         type: String,
         enum: ['user', 'admin'],

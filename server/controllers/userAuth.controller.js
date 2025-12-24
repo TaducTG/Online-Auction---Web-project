@@ -10,18 +10,18 @@ dotenv.config();
 export const handleUserLogin = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
-    return res.status(400).json({ error: "All Fields are required" });
+    return res.status(400).json({ error: "Tất cả các trường là bắt buộc" });
   try {
     const user = await User.findOne({ email });
     //  Checking user exists
     if (!user) {
-      return res.status(400).json({ error: "User not found" });
+      return res.status(400).json({ error: "Không tìm thấy người dùng" });
     }
 
     // Password Validate
     const psswordValidate = await bcrypt.compare(password, user.password);
     if (!psswordValidate) {
-      return res.status(401).json({ error: "Invalid Credentials" });
+      return res.status(401).json({ error: "Thông tin đăng nhập không chính xác" });
     }
 
     // generating jwt token
@@ -58,10 +58,10 @@ export const handleUserLogin = async (req, res) => {
     });
     await login.save();
 
-    return res.status(200).json({ message: "Login Successful" });
+    return res.status(200).json({ message: "Đăng nhập thành công" });
   } catch (error) {
     console.error("Login Error:", error);
-    return res.status(500).json({ error: "Server error from handle login" });
+    return res.status(500).json({ error: "Lỗi máy chủ từ đăng nhập" });
   }
 };
 
@@ -71,14 +71,14 @@ export const handleUserSignup = async (req, res) => {
 
   // Checking input fields
   if (!name || !email || !password) {
-    return res.status(400).json({ error: "All fields are required" });
+    return res.status(400).json({ error: "Tất cả các trường là bắt buộc" });
   }
   try {
     const existingUser = await User.findOne({ email });
 
     // Checking existing of user
     if (existingUser)
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).json({ error: "Người dùng đã tồn tại" });
 
     // Getting geo details
     const ip = getClientIp(req);
@@ -123,10 +123,10 @@ export const handleUserSignup = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(201).json({ message: "User registered successfully" });
+    return res.status(201).json({ message: "Đăng ký người dùng thành công" });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Lỗi máy chủ" });
   }
 };
 
@@ -136,5 +136,5 @@ export const handleUserLogout = async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
   });
-  return res.status(200).json({ message: "Logged out successfully" });
+  return res.status(200).json({ message: "Đăng xuất thành công" });
 };

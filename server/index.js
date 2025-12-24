@@ -13,6 +13,7 @@ import userRouter from './routes/user.js';
 import contactRouter from "./routes/contact.js";
 import adminRouter from './routes/admin.js';
 import notificationRouter from './routes/notification.js';
+import { startAuctionScheduler } from './services/auctionScheduler.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,6 +43,9 @@ app.use('/auction', secureRoute, auctionRouter);
 app.use('/contact', contactRouter);
 app.use('/admin', secureRoute, adminRouter)
 app.use('/notifications', secureRoute, notificationRouter)
+
+// Khởi động auction scheduler
+startAuctionScheduler();
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
