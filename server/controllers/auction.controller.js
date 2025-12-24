@@ -34,18 +34,18 @@ export const createAuction = async (req, res) => {
         .status(400)
         .json({
           message:
-            "Missing required fields: itemName, startingPrice, itemDescription, itemCategory, itemEndDate are required",
+            "Thiếu các trường bắt buộc: tên sản phẩm, giá khởi điểm, mô tả, danh mục, ngày kết thúc là bắt buộc",
         });
     }
 
     if (!req.file) {
       console.log("No file uploaded");
-      return res.status(400).json({ message: "Item photo is required" });
+      return res.status(400).json({ message: "Ảnh sản phẩm là bắt buộc" });
     }
 
     if (!req.user || !req.user.id) {
       console.log("User authentication failed, req.user:", req.user);
-      return res.status(401).json({ message: "Authentication required" });
+      return res.status(401).json({ message: "Yêu cầu xác thực" });
     }
 
     // Construct image URL from file path
@@ -63,7 +63,7 @@ export const createAuction = async (req, res) => {
       console.log("Invalid date range");
       return res
         .status(400)
-        .json({ message: "Auction end date must be after start date" });
+        .json({ message: "Ngày kết thúc đấu giá phải sau ngày bắt đầu" });
     }
 
     // Ensure seller is a valid ObjectId
@@ -90,7 +90,7 @@ export const createAuction = async (req, res) => {
     res
       .status(201)
       .json({
-        message: "Auction created successfully",
+        message: "Tạo đấu giá thành công",
         newAuction: savedAuction,
       });
   } catch (error) {
@@ -100,7 +100,7 @@ export const createAuction = async (req, res) => {
     console.error("Full error:", error);
     res
       .status(500)
-      .json({ message: "Error creating auction", error: error.message });
+      .json({ message: "Lỗi khi tạo đấu giá", error: error.message });
   }
 };
 
@@ -128,7 +128,7 @@ export const showAuction = async (req, res) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Error fetching auctions", error: error.message });
+      .json({ message: "Lỗi khi tải danh sách đấu giá", error: error.message });
   }
 };
 
@@ -143,7 +143,7 @@ export const auctionById = async (req, res) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Error fetching auctions", error: error.message });
+      .json({ message: "Lỗi khi tải thông tin đấu giá", error: error.message });
   }
 };
 
@@ -154,22 +154,27 @@ export const placeBid = async (req, res) => {
     const { id } = req.params;
 
     const product = await Product.findById(id).populate("bids.bidder", "name");
-    if (!product) return res.status(404).json({ message: "Auction not found" });
+    if (!product) return res.status(404).json({ message: "Không tìm thấy đấu giá" });
 
+    // Kiểm tra đấu giá đã kết thúc theo thời gian
     if (new Date(product.itemEndDate) < new Date())
-      return res.status(400).json({ message: "Auction has already ended" });
+      return res.status(400).json({ message: "Đấu giá đã kết thúc" });
+
+    // Kiểm tra đấu giá đã được xử lý/bán
+    if (product.isSold || product.winner)
+      return res.status(400).json({ message: "Đấu giá đã kết thúc và được xử lý" });
 
     const amount = Number(bidAmount);
     if (!Number.isFinite(amount) || amount <= 0) {
-      return res.status(400).json({ message: "Gia bid khong hop le" });
+      return res.status(400).json({ message: "Giá đặt không hợp lệ" });
     }
     
     if (!Number.isInteger(amount)) {
-      return res.status(400).json({ message: "Gia bid phai la so nguyen" });
+      return res.status(400).json({ message: "Giá đặt phải là số nguyên" });
     }
 
     const bidder = await User.findById(user).select("balance");
-    if (!bidder) return res.status(404).json({ message: "User not found" });
+    if (!bidder) return res.status(404).json({ message: "Không tìm thấy người dùng" });
 
     const base = Number(product.startingPrice);
     const currentPrice = Number(product.currentPrice);
@@ -180,22 +185,22 @@ export const placeBid = async (req, res) => {
     const maxBid = Math.floor(currentPrice + base * 5);
 
     if (minBid > maxBid) {
-      return res.status(400).json({ message: "Khong the dat bid cao hon voi quy tac hien tai" });
+      return res.status(400).json({ message: "Không thể đặt giá cao hơn với quy tắc hiện tại" });
     }
 
     if (amount < minBid) {
       return res
         .status(400)
-        .json({ message: `Bid toi thieu: ${minBid.toLocaleString("vi-VN")} VND` });
+        .json({ message: `Giá tối thiểu: ${minBid.toLocaleString("vi-VN")} VND` });
     }
     if (amount > maxBid) {
       return res
         .status(400)
-        .json({ message: `Bid toi da: ${maxBid.toLocaleString("vi-VN")} VND` });
+        .json({ message: `Giá tối đa: ${maxBid.toLocaleString("vi-VN")} VND` });
     }
     if (amount > bidder.balance) {
       return res.status(400).json({
-        message: `So du khong du (so du: ${bidder.balance.toLocaleString("vi-VN")} VND)`,
+        message: `Số dư không đủ (số dư: ${bidder.balance.toLocaleString("vi-VN")} VND)`,
       });
     }
 
@@ -218,8 +223,8 @@ export const placeBid = async (req, res) => {
         type: 'outbid',
         auction: id,
         actor: user,
-        title: 'Outbid!',
-        message: `Co nguoi dat bid cao hon cho "${product.itemName}". Bid moi: ${amount.toLocaleString("vi-VN")} VND`
+        title: 'Bị vượt giá!',
+        message: `Có người đặt giá cao hơn cho "${product.itemName}". Giá mới: ${amount.toLocaleString("vi-VN")} VND`
       });
     }
 
@@ -230,14 +235,14 @@ export const placeBid = async (req, res) => {
         type: 'bid',
         auction: id,
         actor: user,
-        title: 'New Bid Placed',
-        message: `Co nguoi bid san pham "${product.itemName}". Bid moi: ${amount.toLocaleString("vi-VN")} VND`
+        title: 'Có người đặt giá mới',
+        message: `Có người đặt giá cho sản phẩm "${product.itemName}". Giá mới: ${amount.toLocaleString("vi-VN")} VND`
       });
     }
 
-    res.status(200).json({ message: "Bid placed successfully" });
+    res.status(200).json({ message: "Đặt giá thành công" });
   } catch (error) {
-    res.status(500).json({ message: "Error placing bid", error: error.message })
+    res.status(500).json({ message: "Lỗi khi đặt giá", error: error.message })
   }
 }
 
@@ -314,7 +319,7 @@ export const dashboardData = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error getting dashboard data", error: error.message });
+      .json({ message: "Lỗi khi tải dữ liệu bảng điều khiển", error: error.message });
   }
 };
 
@@ -342,6 +347,6 @@ export const myAuction = async (req, res) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Error fetching auctions", error: error.message });
+      .json({ message: "Lỗi khi tải danh sách đấu giá của bạn", error: error.message });
   }
 };

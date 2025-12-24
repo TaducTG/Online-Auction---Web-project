@@ -1,12 +1,35 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { placeBid, viewAuction } from "../api/auction.js";
 import { useSelector } from "react-redux";
 import LoadingScreen from "../components/LoadingScreen.jsx";
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheck, FaTimes, FaClock, FaGavel } from "react-icons/fa";
 
 const formatVND = (value) => `${Number(value ?? 0).toLocaleString("vi-VN")} VND`;
+
+const formatTimeRemaining = (endDate) => {
+  const now = new Date();
+  const end = new Date(endDate);
+  const diffMs = Math.max(0, end - now);
+  
+  if (diffMs === 0) return "Đã kết thúc";
+  
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+  
+  if (days > 0) {
+    return `${days} ngày ${hours} giờ ${minutes} phút ${seconds} giây`;
+  } else if (hours > 0) {
+    return `${hours} giờ ${minutes} phút ${seconds} giây`;
+  } else if (minutes > 0) {
+    return `${minutes} phút ${seconds} giây`;
+  } else {
+    return `${seconds} giây`;
+  }
+};
 
 export const ViewAuction = () => {
   const { id } = useParams();
@@ -15,6 +38,7 @@ export const ViewAuction = () => {
   const inputRef = useRef();
   const [bidError, setBidError] = useState(null);
   const [bidSuccess, setBidSuccess] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState("");
 
   const { data, isLoading } = useQuery({
     queryKey: ["viewAuctions", id],
@@ -22,6 +46,18 @@ export const ViewAuction = () => {
     staleTime: 30 * 1000,
     placeholderData: () => undefined,
   });
+
+  // Update time remaining every second
+  useEffect(() => {
+    if (!data) return;
+    
+    setTimeRemaining(formatTimeRemaining(data.itemEndDate));
+    const interval = setInterval(() => {
+      setTimeRemaining(formatTimeRemaining(data.itemEndDate));
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [data]);
 
   const placeBidMutate = useMutation({
     mutationFn: ({ bidAmount, id }) => placeBid({ bidAmount, id }),
@@ -101,38 +137,54 @@ export const ViewAuction = () => {
               </p>
             </div>
 
-            {/* Pricing Info */}
-            <div className="bg-white p-6 rounded-md shadow-md border border-gray-200">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <p className="text-sm text-gray-500">Starting Price</p>
-                  <p className="text-lg font-semibold text-gray-900">
+            {/* Pricing & Status Info */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg shadow-md border border-blue-200">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <FaGavel className="text-blue-600" /> Thông Tin Đấu Giá
+              </h3>
+              
+              {/* First Row: Starting Price and Current Price */}
+              <div className="grid grid-cols-2 gap-4 mb-6 pb-6 border-b border-blue-200">
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Giá Khởi Điểm</p>
+                  <p className="text-2xl font-bold text-gray-900">
                     {formatVND(data.startingPrice)}
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500">Current Price</p>
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-green-200 border-2">
+                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Giá Hiện Tại</p>
                   <p className="text-2xl font-bold text-green-600">
                     {formatVND(data.currentPrice)}
                   </p>
+                  {data.currentPrice > data.startingPrice && (
+                    <p className="text-xs text-green-600 mt-1">
+                      ↑ {formatVND(data.currentPrice - data.startingPrice)}
+                    </p>
+                  )}
                 </div>
               </div>
 
+              {/* Second Row: Time Left and Total Bids */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Total Bids</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {data.bids.length}
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2 flex items-center gap-1">
+                    <FaClock className="text-red-500" /> Thời Gian Còn Lại
                   </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Time Left</p>
                   <p
-                    className={`text-lg font-semibold ${
-                      isActive ? "text-red-600" : "text-gray-500"
+                    className={`text-lg font-bold ${
+                      isActive ? "text-red-600" : "text-gray-400"
                     }`}
                   >
-                    {isActive ? `${daysLeft} days` : "Ended"}
+                    {isActive ? timeRemaining : "Đã Kết Thúc"}
+                  </p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Tổng Lượt Bid</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {data.bids.length}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {data.bids.length === 1 ? "1 lượt đấu giá" : `${data.bids.length} lượt đấu giá`}
                   </p>
                 </div>
               </div>

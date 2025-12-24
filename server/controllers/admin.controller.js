@@ -42,7 +42,7 @@ export const getAdminDashboard = async (req, res) => {
     res
       .status(500)
       .json({
-        message: "Error fetching admin dashboard data",
+        message: "Lỗi khi tải dữ liệu bảng điều khiển quản trị",
         error: error.message,
       });
   }
@@ -104,7 +104,7 @@ export const getAllUsers = async (req, res) => {
     console.error("Error fetching users:", error);
     res.status(500).json({
       success: false,
-      message: "Error fetching users",
+      message: "Lỗi khi tải danh sách người dùng",
       error: error.message,
     });
   }

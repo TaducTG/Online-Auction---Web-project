@@ -24,9 +24,9 @@ export const handleSendMessage = async (req, res) => {
             html: userEmailTemplate(name, email, subject, message)
         }]
         );
-        res.status(200).json({ message: "Message sent succesfully" });
+        res.status(200).json({ message: "Gửi tin nhắn thành công" });
     } catch (error) {
-        return res.status(500).json({ error: "Something went wrong from server" })
+        return res.status(500).json({ error: "Đã xảy ra lỗi từ máy chủ" })
     }
 
 }
