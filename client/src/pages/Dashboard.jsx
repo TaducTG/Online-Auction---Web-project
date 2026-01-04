@@ -23,7 +23,7 @@ const Dashboard = () => {
               Total Auctions
             </h3>
             <p className="text-3xl font-bold text-gray-900 mt-2">
-              {data.totalAuctions}
+              {data?.totalAuctions || 0}
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
@@ -31,13 +31,13 @@ const Dashboard = () => {
               Active Auctions
             </h3>
             <p className="text-3xl font-bold text-green-600 mt-2">
-              {data.activeAuctions}
+              {data?.activeAuctions || 0}
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
             <h3 className="text-sm font-medium text-gray-500">Your Auctions</h3>
             <p className="text-3xl font-bold text-blue-600 mt-2">
-              {data.userAuctionCount}
+              {data?.userAuctionCount || 0}
             </p>
           </div>
         </div>
@@ -54,7 +54,7 @@ const Dashboard = () => {
             </Link>
           </div>
 
-          {data.latestAuctions.length === 0 ? (
+          {data?.latestAuctions?.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-lg shadow-md border border-gray-200">
               <div className="text-6xl mb-4">🏷️</div>
               <p className="text-gray-500 text-lg font-medium mb-2">
@@ -64,7 +64,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-4">
-              {data.latestAuctions.map((auction) => (
+              {data?.latestAuctions?.map((auction) => (
                 <AuctionCard key={auction._id} auction={auction} />
               ))}
             </div>
@@ -83,7 +83,7 @@ const Dashboard = () => {
             </Link>
           </div>
 
-          {data.latestUserAuctions.length === 0 ? (
+          {data?.latestUserAuctions?.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-lg shadow-md border border-gray-200">
               <div className="text-6xl mb-4">📦</div>
               <p className="text-gray-500 text-lg font-medium mb-4">
@@ -97,7 +97,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-4">
-              {data.latestUserAuctions.map((auction) => (
+              {data?.latestUserAuctions?.map((auction) => (
                 <AuctionCard key={auction._id} auction={auction} />
               ))}
             </div>

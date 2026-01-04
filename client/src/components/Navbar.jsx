@@ -33,6 +33,8 @@ export const Navbar = () => {
     return localStorage.getItem('darkMode') === 'true';
   });
   const { user } = useSelector((state) => state.auth);
+  // Safely access the nested user object or use the user object directly if it's not nested
+  const currentUser = user?.user || user;
 
   // Dark mode toggle
   useEffect(() => {
@@ -86,7 +88,7 @@ export const Navbar = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
-              {(user ? getNavLinks(user.user.role) : navMenu).map((item) => (
+              {(currentUser ? getNavLinks(currentUser.role) : navMenu).map((item) => (
                 <NavLink
                   to={item.link}
                   key={item.link}
@@ -118,7 +120,7 @@ export const Navbar = () => {
             <div className="flex items-center gap-2">
               {/* Notification Dropdown - only show when user is logged in */}
               {user && <NotificationDropdown />}
-              
+
               {/* Mobile Menu Button */}
               <button
                 onClick={toggleMenu}
@@ -166,10 +168,10 @@ export const Navbar = () => {
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center space-x-3">
               <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                {user.user.avatar ? (
+                {currentUser.avatar ? (
                   <img
-                    src={user.user.avatar}
-                    alt={user.user.name}
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -177,9 +179,9 @@ export const Navbar = () => {
                 )}
               </div>
               <div>
-                <p className="font-medium text-gray-900 ">{user.user.name}</p>
+                <p className="font-medium text-gray-900 ">{currentUser.name}</p>
                 <p className="text-sm text-gray-500 truncate">
-                  {user.user.email}
+                  {currentUser.email}
                 </p>
               </div>
             </div>
@@ -188,7 +190,7 @@ export const Navbar = () => {
 
         <nav className="p-4">
           <ul className="space-y-1">
-            {(user ? getNavLinks(user.user.role) : navMenu).map((item) => (
+            {(currentUser ? getNavLinks(currentUser.role) : navMenu).map((item) => (
               <li key={item.link}>
                 <NavLink
                   to={item.link}
