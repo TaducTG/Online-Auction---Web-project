@@ -63,11 +63,11 @@ export const getAllUsers = async (req, res) => {
     // Build search query
     const searchQuery = search
       ? {
-          $or: [
-            { name: { $regex: search, $options: "i" } },
-            { email: { $regex: search, $options: "i" } },
-          ],
-        }
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+        ],
+      }
       : {};
 
     // Get total count for pagination info
@@ -105,6 +105,62 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Lỗi khi tải danh sách người dùng",
+      error: error.message,
+    });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    if (user.role === "admin") {
+      return res.status(400).json({ message: "Không thể xóa tài khoản Admin" });
+    }
+
+    await User.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Đã xóa người dùng thành công" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({
+      message: "Lỗi khi xóa người dùng",
+      error: error.message,
+    });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone, address } = req.body;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    // Update fields
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.phone = phone || user.phone;
+    if (address) {
+      user.address = { ...user.address, ...address };
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "Cập nhật thông tin thành công", user });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({
+      message: "Lỗi khi cập nhật người dùng",
       error: error.message,
     });
   }

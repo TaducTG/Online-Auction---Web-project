@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import LoadingScreen from '../../components/LoadingScreen';
-import { getAllUsers } from '../../api/admin';
+import { getAllUsers, deleteUser, updateUser } from '../../api/admin';
+import EditUserModal from '../../components/EditUserModal';
 
 export const UsersList = () => {
   const [users, setUsers] = useState([]);
@@ -12,6 +13,8 @@ export const UsersList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [editingUser, setEditingUser] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const fetchUsers = async (page = 1, search = '', sort = 'createdAt', order = 'desc') => {
     try {
@@ -46,6 +49,38 @@ export const UsersList = () => {
       setSortOrder('desc');
     }
     setCurrentPage(1);
+  };
+
+  const handleDelete = async (userId, userName) => {
+    if (window.confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
+      try {
+        await deleteUser(userId);
+        // Refresh users list
+        fetchUsers(currentPage, searchTerm, sortBy, sortOrder);
+        alert('User deleted successfully');
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Failed to delete user');
+      }
+    }
+  };
+
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveUser = async (userId, formData) => {
+    try {
+      await updateUser(userId, formData);
+      setIsEditModalOpen(false);
+      setEditingUser(null);
+      fetchUsers(currentPage, searchTerm, sortBy, sortOrder);
+      alert('User updated successfully');
+    } catch (error) {
+      console.error('Error updating user:', error);
+      alert('Failed to update user');
+    }
   };
 
   const formatDate = (dateString) => {
@@ -144,7 +179,7 @@ export const UsersList = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('name')}
                   >
@@ -153,7 +188,7 @@ export const UsersList = () => {
                       {getSortIcon('name')}
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('role')}
                   >
@@ -162,7 +197,7 @@ export const UsersList = () => {
                       {getSortIcon('role')}
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('createdAt')}
                   >
@@ -171,7 +206,7 @@ export const UsersList = () => {
                       {getSortIcon('createdAt')}
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('lastLogin')}
                   >
@@ -185,6 +220,9 @@ export const UsersList = () => {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -202,9 +240,9 @@ export const UsersList = () => {
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
                             {user.avatar ? (
-                              <img 
-                                className="h-10 w-10 rounded-full object-cover" 
-                                src={user.avatar} 
+                              <img
+                                className="h-10 w-10 rounded-full object-cover"
+                                src={user.avatar}
                                 alt={user.name}
                               />
                             ) : (
@@ -222,11 +260,10 @@ export const UsersList = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          user.role === 'admin' 
-                            ? 'bg-purple-100 text-purple-800' 
-                            : 'bg-green-100 text-green-800'
-                        }`}>
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.role === 'admin'
+                          ? 'bg-purple-100 text-purple-800'
+                          : 'bg-green-100 text-green-800'
+                          }`}>
                           {user.role}
                         </span>
                       </td>
@@ -243,6 +280,24 @@ export const UsersList = () => {
                         <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                           Active
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        {user.role !== 'admin' && (
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              onClick={() => handleEdit(user)}
+                              className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(user._id, user.name)}
+                              className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -298,27 +353,26 @@ export const UsersList = () => {
                         <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </button>
-                    
+
                     {/* Page numbers */}
                     {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
                       const pageNum = Math.max(1, Math.min(pagination.totalPages - 4, currentPage - 2)) + i;
                       if (pageNum > pagination.totalPages) return null;
-                      
+
                       return (
                         <button
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
-                          className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                            pageNum === currentPage
-                              ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                              : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                          }`}
+                          className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${pageNum === currentPage
+                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                            }`}
                         >
                           {pageNum}
                         </button>
                       );
                     })}
-                    
+
                     <button
                       onClick={() => setCurrentPage(Math.min(pagination.totalPages, currentPage + 1))}
                       disabled={!pagination.hasNextPage}

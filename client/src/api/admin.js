@@ -28,6 +28,20 @@ export const getAllUsers = async (page = 1, search = '', role = 'all', limit = 1
     }
 };
 
+// Update user details
+export const updateUser = async (userId, userData) => {
+    try {
+        const res = await axios.put(`${VITE_API}/admin/users/${userId}`,
+            userData,
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error) {
+        console.log(error?.response?.data?.error || "Can't update user");
+        throw error;
+    }
+};
+
 // Update user role (future functionality)
 export const updateUserRole = async (userId, newRole) => {
     try {
