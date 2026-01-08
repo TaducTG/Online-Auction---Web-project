@@ -30,7 +30,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem('darkMode') === 'true';
+    return localStorage.getItem("darkMode") === "true";
   });
   const { user } = useSelector((state) => state.auth);
   // Safely access the nested user object or use the user object directly if it's not nested
@@ -39,11 +39,11 @@ export const Navbar = () => {
   // Dark mode toggle
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("darkMode", "true");
     } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("darkMode", "false");
     }
   }, [isDark]);
 
@@ -88,19 +88,28 @@ export const Navbar = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
-              {(currentUser ? getNavLinks(currentUser.role) : navMenu).map((item) => (
-                <NavLink
-                  to={item.link}
-                  key={item.link}
-                  className={({ isActive }) =>
-                    isActive
-                      ? "text-indigo-600 hover:text-indigo-800 font-medium"
-                      : "text-gray-600 hover:text-gray-800 font-medium"
-                  }
-                >
-                  {item.name}
-                </NavLink>
-              ))}
+              {(currentUser ? getNavLinks(currentUser.role) : navMenu).map(
+                (item) => (
+                  item.link ? (
+                    <NavLink
+                      to={item.link}
+                      key={item.link}
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-indigo-600 hover:text-indigo-800 font-medium"
+                          : "text-gray-600 hover:text-gray-800 font-medium"
+                      }
+                    >
+                      {item.name}
+                    </NavLink>
+                  ) : (
+                    <span key={item.name} className="text-gray-600 font-medium flex items-center">
+                      {item.icon}
+                      {item.name}
+                    </span>
+                  )
+                )
+              )}
 
               {/* Dark Mode Toggle */}
               <button
@@ -137,15 +146,17 @@ export const Navbar = () => {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${isMenuOpen ? "opacity-70" : "opacity-0 pointer-events-none"
-          }`}
+        className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${
+          isMenuOpen ? "opacity-70" : "opacity-0 pointer-events-none"
+        }`}
         onClick={() => setIsMenuOpen(false)}
       />
 
       <div
         className={`fixed top-0 right-0 h-full w-72 
           bg-gradient-to-b from-blue-100 via-blue-300 to-blue-600
-          shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"
+          shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+            isMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
@@ -190,22 +201,24 @@ export const Navbar = () => {
 
         <nav className="p-4">
           <ul className="space-y-1">
-            {(currentUser ? getNavLinks(currentUser.role) : navMenu).map((item) => (
-              <li key={item.link}>
-                <NavLink
-                  to={item.link}
-                  className={({ isActive }) =>
-                    isActive
-                      ? "flex items-center py-2 text-indigo-600  hover:text-indigo-800 font-medium"
-                      : "flex items-center py-2 text-gray-600  hover:text-gray-800 font-medium"
-                  }
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.icon}
-                  {item.name}
-                </NavLink>
-              </li>
-            ))}
+            {(currentUser ? getNavLinks(currentUser.role) : navMenu).map(
+              (item) => (
+                <li key={item.link}>
+                  <NavLink
+                    to={item.link}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "flex items-center py-2 text-indigo-600  hover:text-indigo-800 font-medium"
+                        : "flex items-center py-2 text-gray-600  hover:text-gray-800 font-medium"
+                    }
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </NavLink>
+                </li>
+              )
+            )}
           </ul>
 
           {user ? (
@@ -294,17 +307,14 @@ const navMenu = [
   },
   {
     name: "About",
-    link: "/about",
     icon: <MdOutlineAccountCircle className="mr-3 h-5 w-5" />,
   },
   {
     name: "Contact",
-    link: "/contact",
     icon: <MdMailOutline className="mr-3 h-5 w-5" />,
   },
   {
     name: "Legal",
-    link: "/legal",
     icon: <IoDocumentTextOutline className="mr-3 h-5 w-5" />,
   },
 ];
@@ -377,7 +387,7 @@ const adminNavLink = [
 
 // Helper function to get navigation links based on user role
 const getNavLinks = (userRole) => {
-  if (userRole === 'admin') {
+  if (userRole === "admin") {
     return adminNavLink;
   }
   return protectedNavLink.slice(0, 5);
