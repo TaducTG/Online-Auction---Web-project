@@ -42,15 +42,21 @@ export const viewAuction = async (id) => {
 // placing bid for auction
 export const placeBid = async ({ bidAmount, id }) => {
     try {
-        const res = await axios.post(`${VITE_AUCTION_API}/${id}`,
+        const res = await axios.post(
+            `${VITE_AUCTION_API}/${id}`,
             { bidAmount },
             { withCredentials: true }
-        )
+        );
         return res.data;
     } catch (error) {
-        console.log("Error placing bid", error.message);
+        console.error(
+          "Error placing bid",
+          error.response?.data || error.message
+        );
+        throw error;
     }
-}
+};
+
 
 
 // creating new auction

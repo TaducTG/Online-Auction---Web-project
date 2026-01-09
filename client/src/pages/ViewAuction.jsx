@@ -6,20 +6,21 @@ import { useSelector } from "react-redux";
 import LoadingScreen from "../components/LoadingScreen.jsx";
 import { FaCheck, FaTimes, FaClock, FaGavel } from "react-icons/fa";
 
-const formatVND = (value) => `${Number(value ?? 0).toLocaleString("vi-VN")} VND`;
+const formatVND = (value) =>
+  `${Number(value ?? 0).toLocaleString("vi-VN")} VND`;
 
 const formatTimeRemaining = (endDate) => {
   const now = new Date();
   const end = new Date(endDate);
   const diffMs = Math.max(0, end - now);
-  
+
   if (diffMs === 0) return "Đã kết thúc";
-  
+
   const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-  
+
   if (days > 0) {
     return `${days} ngày ${hours} giờ ${minutes} phút ${seconds} giây`;
   } else if (hours > 0) {
@@ -50,12 +51,12 @@ export const ViewAuction = () => {
   // Update time remaining every second
   useEffect(() => {
     if (!data) return;
-    
+
     setTimeRemaining(formatTimeRemaining(data.itemEndDate));
     const interval = setInterval(() => {
       setTimeRemaining(formatTimeRemaining(data.itemEndDate));
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, [data]);
 
@@ -65,11 +66,12 @@ export const ViewAuction = () => {
       setBidError(null);
       setBidSuccess(true);
       setTimeout(() => setBidSuccess(false), 3000);
-      queryClient.invalidateQueries({ queryKey: ["viewAuctions"] });
+      queryClient.invalidateQueries({ queryKey: ["viewAuctions", id] });
       if (inputRef.current) inputRef.current.value = "";
     },
     onError: (error) => {
-      const message = error?.response?.data?.message || error.message || "Dat bid that bai";
+      const message =
+        error?.response?.data?.message || error.message || "Dat bid that bai";
       setBidError(message);
       setBidSuccess(false);
     },
@@ -79,10 +81,13 @@ export const ViewAuction = () => {
 
   const basePrice = data?.startingPrice || 0;
   const currentPrice = data?.currentPrice || basePrice;
-  
+
   // Min bid: current price + 80% of starting price (or at least +1 over current)
   // Max bid: current price + 500% of starting price
-  const minBidValue = Math.max(currentPrice + 1, Math.ceil(currentPrice + basePrice * 0.8));
+  const minBidValue = Math.max(
+    currentPrice + 1,
+    Math.ceil(currentPrice + basePrice * 0.8)
+  );
   let maxBidValue = Math.floor(currentPrice + basePrice * 5);
   if (maxBidValue < minBidValue) maxBidValue = minBidValue;
 
@@ -142,17 +147,21 @@ export const ViewAuction = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <FaGavel className="text-blue-600" /> Thông Tin Đấu Giá
               </h3>
-              
+
               {/* First Row: Starting Price and Current Price */}
               <div className="grid grid-cols-2 gap-4 mb-6 pb-6 border-b border-blue-200">
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Giá Khởi Điểm</p>
+                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">
+                    Giá Khởi Điểm
+                  </p>
                   <p className="text-2xl font-bold text-gray-900">
                     {formatVND(data.startingPrice)}
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-green-200 border-2">
-                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Giá Hiện Tại</p>
+                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">
+                    Giá Hiện Tại
+                  </p>
                   <p className="text-2xl font-bold text-green-600">
                     {formatVND(data.currentPrice)}
                   </p>
@@ -179,12 +188,16 @@ export const ViewAuction = () => {
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Tổng Lượt Bid</p>
+                  <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">
+                    Tổng Lượt Bid
+                  </p>
                   <p className="text-2xl font-bold text-blue-600">
                     {data.bids.length}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    {data.bids.length === 1 ? "1 lượt đấu giá" : `${data.bids.length} lượt đấu giá`}
+                    {data.bids.length === 1
+                      ? "1 lượt đấu giá"
+                      : `${data.bids.length} lượt đấu giá`}
                   </p>
                 </div>
               </div>
@@ -200,7 +213,8 @@ export const ViewAuction = () => {
                       htmlFor="bidAmount"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Bid Amount (minimum: {formatVND(minBidValue)} maximum: {formatVND(maxBidValue)})
+                      Bid Amount (minimum: {formatVND(minBidValue)} maximum:{" "}
+                      {formatVND(maxBidValue)})
                     </label>
                     <input
                       type="number"
@@ -215,19 +229,19 @@ export const ViewAuction = () => {
                       required
                     />
                   </div>
-                  
+
                   {bidError && (
                     <div className="p-3 bg-red-100 text-red-700 rounded-lg flex items-center gap-2">
                       <FaTimes /> {bidError}
                     </div>
                   )}
-                  
+
                   {bidSuccess && (
                     <div className="p-3 bg-green-100 text-green-700 rounded-lg flex items-center gap-2">
                       <FaCheck /> Dat bid thanh cong!
                     </div>
                   )}
-                  
+
                   <button
                     type="submit"
                     disabled={placeBidMutate.isPending}
