@@ -198,8 +198,17 @@ export default function Wallet() {
                           {transaction.type === 'topup' ? 'Nạp Tiền' : transaction.type === 'bid' ? 'Đấu Giá' : 'Hoàn Tiền'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-right font-semibold text-green-600">
-                        +{formatVND(transaction.amount)}
+                      <td className="px-6 py-4 text-sm text-right font-semibold">
+                        <span className={`${
+                          transaction.type === 'topup' 
+                            ? 'text-green-600'
+                            : transaction.type === 'bid'
+                            ? 'text-red-600'
+                            : 'text-yellow-600'
+                        }`}>
+                          {transaction.type === 'topup' ? '+' : transaction.type === 'bid' ? '-' : '+'}
+                          {formatVND(transaction.amount)}
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-right font-medium text-gray-900">
                         {formatVND(transaction.balanceAfter)}

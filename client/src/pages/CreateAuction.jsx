@@ -15,7 +15,13 @@ export const CreateAuction = () => {
     itemCategory: "",
     startingPrice: "",
     itemStartDate: "",
+    itemStartHour: "00",
+    itemStartMinute: "00",
+    itemStartSecond: "00",
     itemEndDate: "",
+    itemEndHour: "00",
+    itemEndMinute: "00",
+    itemEndSecond: "00",
     itemPhoto: "",
   });
 
@@ -29,7 +35,13 @@ export const CreateAuction = () => {
         itemCategory: "",
         startingPrice: "",
         itemStartDate: "",
+        itemStartHour: "00",
+        itemStartMinute: "00",
+        itemStartSecond: "00",
         itemEndDate: "",
+        itemEndHour: "00",
+        itemEndMinute: "00",
+        itemEndSecond: "00",
         itemPhoto: "",
       });
       setError("");
@@ -105,15 +117,34 @@ export const CreateAuction = () => {
       return;
     }
 
-    const start = new Date(formData.itemStartDate);
-    const end = new Date(formData.itemEndDate);
+    // Pad time values with leading zero
+    const padTime = (value) => String(value).padStart(2, "0");
 
-    if (end <= start) {
-      setError("End date must be after start date.");
+    // Construct full datetime with hours, minutes, seconds
+    const startTimeString = `${formData.itemStartDate}T${padTime(formData.itemStartHour)}:${padTime(formData.itemStartMinute)}:${padTime(formData.itemStartSecond)}`;
+    const endTimeString = `${formData.itemEndDate}T${padTime(formData.itemEndHour)}:${padTime(formData.itemEndMinute)}:${padTime(formData.itemEndSecond)}`;
+
+    const startDateTime = new Date(startTimeString);
+    const endDateTime = new Date(endTimeString);
+
+    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+      setError("Invalid date/time format.");
       return;
     }
 
-    mutate(formData);
+    if (endDateTime <= startDateTime) {
+      setError("End date/time must be after start date/time.");
+      return;
+    }
+
+    // Send data with datetime strings
+    const submitData = {
+      ...formData,
+      itemStartDate: startDateTime.toISOString(),
+      itemEndDate: endDateTime.toISOString(),
+    };
+
+    mutate(submitData);
   };
 
   //   today date
@@ -230,7 +261,7 @@ export const CreateAuction = () => {
 
               {/* Start and End Date Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Start Date */}
+                {/* Start Date and Time */}
                 <div>
                   <label
                     htmlFor="itemStartDate"
@@ -249,9 +280,66 @@ export const CreateAuction = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
+                  {/* Start Time */}
+                  <div className="mt-3 grid grid-cols-3 gap-2">
+                    <div>
+                      <label
+                        htmlFor="itemStartHour"
+                        className="block text-xs font-medium text-gray-600 mb-1"
+                      >
+                        Hour (00-23)
+                      </label>
+                      <input
+                        type="number"
+                        id="itemStartHour"
+                        name="itemStartHour"
+                        min="0"
+                        max="23"
+                        value={formData.itemStartHour}
+                        onChange={handleInputChange}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="itemStartMinute"
+                        className="block text-xs font-medium text-gray-600 mb-1"
+                      >
+                        Minute (00-59)
+                      </label>
+                      <input
+                        type="number"
+                        id="itemStartMinute"
+                        name="itemStartMinute"
+                        min="0"
+                        max="59"
+                        value={formData.itemStartMinute}
+                        onChange={handleInputChange}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="itemStartSecond"
+                        className="block text-xs font-medium text-gray-600 mb-1"
+                      >
+                        Second (00-59)
+                      </label>
+                      <input
+                        type="number"
+                        id="itemStartSecond"
+                        name="itemStartSecond"
+                        min="0"
+                        max="59"
+                        value={formData.itemStartSecond}
+                        onChange={handleInputChange}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                {/* End Date */}
+                {/* End Date and Time */}
                 <div>
                   <label
                     htmlFor="itemEndDate"
@@ -270,6 +358,63 @@ export const CreateAuction = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
+                  {/* End Time */}
+                  <div className="mt-3 grid grid-cols-3 gap-2">
+                    <div>
+                      <label
+                        htmlFor="itemEndHour"
+                        className="block text-xs font-medium text-gray-600 mb-1"
+                      >
+                        Hour (00-23)
+                      </label>
+                      <input
+                        type="number"
+                        id="itemEndHour"
+                        name="itemEndHour"
+                        min="0"
+                        max="23"
+                        value={formData.itemEndHour}
+                        onChange={handleInputChange}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="itemEndMinute"
+                        className="block text-xs font-medium text-gray-600 mb-1"
+                      >
+                        Minute (00-59)
+                      </label>
+                      <input
+                        type="number"
+                        id="itemEndMinute"
+                        name="itemEndMinute"
+                        min="0"
+                        max="59"
+                        value={formData.itemEndMinute}
+                        onChange={handleInputChange}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="itemEndSecond"
+                        className="block text-xs font-medium text-gray-600 mb-1"
+                      >
+                        Second (00-59)
+                      </label>
+                      <input
+                        type="number"
+                        id="itemEndSecond"
+                        name="itemEndSecond"
+                        min="0"
+                        max="59"
+                        value={formData.itemEndSecond}
+                        onChange={handleInputChange}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 

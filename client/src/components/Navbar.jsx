@@ -374,6 +374,11 @@ const adminNavLink = [
     icon: <MdOutlineDashboard className="mr-3 h-5 w-5" />,
   },
   {
+    name: "Manage Auctions",
+    link: "/admin/auctions",
+    icon: <RiAuctionLine className="mr-3 h-5 w-5" />,
+  },
+  {
     name: "Create Auction",
     link: "/create",
     icon: <MdOutlineCreate className="mr-3 h-5 w-5" />,
