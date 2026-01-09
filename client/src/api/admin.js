@@ -82,3 +82,31 @@ export const toggleUserStatus = async (userId, status) => {
         throw error;
     }
 };
+
+// Get all auctions for admin management
+export const getAllAuctions = async (page = 1, search = '', status = 'all', limit = 10, sortBy = 'createdAt', sortOrder = 'desc') => {
+    try {
+        const res = await axios.get(`${VITE_API}/admin/auctions`, {
+            params: { page, search, status, limit, sortBy, sortOrder },
+            withCredentials: true
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error?.response?.data?.error || "Can't load auctions");
+        throw error;
+    }
+};
+
+// End auction manually by admin
+export const endAuctionManually = async (auctionId) => {
+    try {
+        const res = await axios.put(`${VITE_API}/admin/auctions/${auctionId}/end`,
+            {},
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error) {
+        console.log(error?.response?.data?.error || "Can't end auction");
+        throw error;
+    }
+};
