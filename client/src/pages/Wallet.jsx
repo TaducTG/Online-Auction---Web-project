@@ -67,7 +67,7 @@ export default function Wallet() {
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
+        {/* Tiêu đề */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <FaWallet className="text-3xl text-blue-600" />
@@ -76,7 +76,7 @@ export default function Wallet() {
           <p className="text-gray-600">Nạp tiền và theo dõi lịch sử giao dịch</p>
         </div>
 
-        {/* Balance Card */}
+        {/* Thẻ số dư */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-8 mb-8 text-white">
           <p className="text-sm font-medium opacity-90 mb-2">Số dư hiện tại</p>
           <h2 className="text-4xl font-bold mb-2">{formatVND(currentBalance)}</h2>
@@ -90,7 +90,7 @@ export default function Wallet() {
             Nạp Tiền
           </h3>
 
-          {/* Preset Amounts */}
+          {/* Mệnh giá định sẵn */}
           <div className="mb-6">
             <p className="text-sm font-medium text-gray-700 mb-3">Chọn mệnh giá:</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -113,7 +113,7 @@ export default function Wallet() {
             </div>
           </div>
 
-          {/* Custom Amount */}
+          {/* Số tiền tùy chọc */}
           <div className="mb-6 border-t border-gray-200 pt-6">
             <p className="text-sm font-medium text-gray-700 mb-3">Hoặc nhập số tiền khác:</p>
             <div className="flex gap-3">
@@ -152,7 +152,7 @@ export default function Wallet() {
           )}
         </div>
 
-        {/* Transaction History */}
+        {/* Lịch sử giao dịch */}
         <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
             <h3 className="text-2xl font-bold text-gray-900">Lịch Sử Giao Dịch</h3>

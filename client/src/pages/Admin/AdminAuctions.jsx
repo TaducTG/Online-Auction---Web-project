@@ -9,7 +9,7 @@ export const AdminAuctions = () => {
   const [success, setSuccess] = useState(null);
   const [pagination, setPagination] = useState({});
 
-  // Filters and sorting
+  // Bộ lọc và sắp xếp
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
@@ -17,7 +17,7 @@ export const AdminAuctions = () => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [limit, setLimit] = useState(10);
 
-  // Loading states
+  // Trạng thái đang xử lý
   const [isEndingAuction, setIsEndingAuction] = useState(null);
 
   const fetchAuctions = async () => {
@@ -119,24 +119,24 @@ export const AdminAuctions = () => {
           <p className="text-gray-600">Xem và quản lý tất cả các phiên đấu giá</p>
         </div>
 
-        {/* Success Message */}
+        {/* Thông báo thành công */}
         {success && (
           <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
             {success}
           </div>
         )}
 
-        {/* Error Message */}
+        {/* Thông báo lỗi */}
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
             {error}
           </div>
         )}
 
-        {/* Filters */}
+        {/* Bộ lọc */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {/* Search */}
+            {/* Tìm kiếm */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Tìm kiếm
@@ -150,7 +150,7 @@ export const AdminAuctions = () => {
               />
             </div>
 
-            {/* Status Filter */}
+            {/* Bộ lọc Trạng thái */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Trạng thái
@@ -167,7 +167,7 @@ export const AdminAuctions = () => {
               </select>
             </div>
 
-            {/* Sort By */}
+            {/* Sắp xếp theo */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Sắp xếp theo
@@ -183,7 +183,7 @@ export const AdminAuctions = () => {
               </select>
             </div>
 
-            {/* Sort Order */}
+            {/* Thứ tự sắp xếp */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Thứ tự
@@ -198,7 +198,7 @@ export const AdminAuctions = () => {
               </select>
             </div>
 
-            {/* Limit */}
+            {/* Giới hạn */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Số lượng
@@ -216,7 +216,7 @@ export const AdminAuctions = () => {
           </div>
         </div>
 
-        {/* Auctions Table */}
+        {/* Bảng Phiên Đấu Giá */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {auctions.length === 0 ? (
             <div className="p-6 text-center text-gray-500">
@@ -324,7 +324,7 @@ export const AdminAuctions = () => {
           )}
         </div>
 
-        {/* Pagination */}
+        {/* Phân trang */}
         {pagination.totalPages > 1 && (
           <div className="mt-6 flex items-center justify-center gap-2">
             <button

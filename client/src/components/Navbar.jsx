@@ -33,10 +33,10 @@ export const Navbar = () => {
     return localStorage.getItem("darkMode") === "true";
   });
   const { user } = useSelector((state) => state.auth);
-  // Safely access the nested user object or use the user object directly if it's not nested
+  // Truy cập an toàn đối tượng người dùng lồng nhau
   const currentUser = user?.user || user;
 
-  // Dark mode toggle
+  // Chế độ tối
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add("dark");
@@ -51,7 +51,7 @@ export const Navbar = () => {
     setIsDark(!isDark);
   };
 
-  // User logout
+  // Đăng xuất
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
@@ -61,7 +61,7 @@ export const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  //this will prevent body scroll when drawer is open
+  // Ngăn cuộn trang khi mở ngăn kéo
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -86,7 +86,7 @@ export const Navbar = () => {
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Điều hướng trên máy tính */}
             <nav className="hidden md:flex items-center space-x-6">
               {(currentUser ? getNavLinks(currentUser.role) : navMenu).map(
                 (item) => (
@@ -111,7 +111,7 @@ export const Navbar = () => {
                 )
               )}
 
-              {/* Dark Mode Toggle */}
+              {/* Bật tắt chế độ tối */}
               <button
                 onClick={toggleDarkMode}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -125,12 +125,12 @@ export const Navbar = () => {
               </button>
             </nav>
 
-            {/* Right side icons - Notification and Menu */}
+            {/* Các biểu tượng bên phải - Thông báo và Menu */}
             <div className="flex items-center gap-2">
-              {/* Notification Dropdown - only show when user is logged in */}
+              {/* Thông báo - chỉ hiển thị khi người dùng đã đăng nhập */}
               {user && <NotificationDropdown />}
 
-              {/* Mobile Menu Button */}
+              {/* Nút menu di động */}
               <button
                 onClick={toggleMenu}
                 className="text-gray-600 hover:text-gray-900 focus:outline-none"
@@ -144,7 +144,7 @@ export const Navbar = () => {
         </div>
       </header>
 
-      {/* Mobile Menu Drawer */}
+      {/* Ngăn kéo menu di động */}
       <div
         className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${
           isMenuOpen ? "opacity-70" : "opacity-0 pointer-events-none"
@@ -249,7 +249,7 @@ export const Navbar = () => {
                     }}
                   >
                     <IoLogOutOutline className="mr-3 h-5 w-5" />
-                    Sign out
+                    Đăng xuất
                   </button>
                 </li>
               </ul>
@@ -263,7 +263,7 @@ export const Navbar = () => {
                   hover:bg-white hover:text-indigo-800 
                   transition-colors"
               >
-                Log in
+                Đăng Nhập
               </Link>
               <Link
                 to="/signup"
@@ -271,7 +271,7 @@ export const Navbar = () => {
                   bg-indigo-800 text-white border border-white rounded-md 
                   hover:bg-indigo-700 transition-colors"
               >
-                Sign up
+                Đăng Ký
               </Link>
             </div>
           )}
@@ -287,13 +287,13 @@ export const LoginSignup = () => {
         to="/login"
         className="px-4 py-2 text-gray-700  border border-gray-300 rounded-md hover:bg-gray-100 transition-colors hidden md:block"
       >
-        Log in
+        Đăng Nhập
       </Link>
       <Link
         to="/signup"
         className="px-4 py-2 bg-indigo-800 text-white  rounded-md hover:bg-indigo-700 transition-colors hidden md:block"
       >
-        Sign up
+        Đăng Ký
       </Link>
     </>
   );
@@ -301,62 +301,62 @@ export const LoginSignup = () => {
 
 const navMenu = [
   {
-    name: "Home",
+    name: "Trang Chủ",
     link: "/",
     icon: <MdOutlineHome className="mr-3 h-5 w-5" />,
   },
   {
-    name: "About",
+    name: "Về Chúng Tôi",
     icon: <MdOutlineAccountCircle className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Contact",
+    name: "Liên Hệ",
     icon: <MdMailOutline className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Legal",
+    name: "Pháp Lý",
     icon: <IoDocumentTextOutline className="mr-3 h-5 w-5" />,
   },
 ];
 
 const protectedNavLink = [
   {
-    name: "Dashboard",
+    name: "Trang Chủ",
     link: "/",
     icon: <MdOutlineDashboard className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Create Auction",
+    name: "Tạo Đấu Giá",
     link: "/create",
     icon: <MdOutlineCreate className="mr-3 h-5 w-5" />,
   },
   {
-    name: "View Auction",
+    name: "Xem Đấu Giá",
     link: "/auction",
     icon: <RiAuctionLine className="mr-3 h-5 w-5" />,
   },
   {
-    name: "My Auction",
+    name: "Phiên Của Tôi",
     link: "/myauction",
     icon: <MdAttachMoney className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Wallet",
+    name: "Ví",
     link: "/wallet",
     icon: <MdAccountBalanceWallet className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Contact",
+    name: "Liên Hệ",
     link: "/contact",
     icon: <MdMailOutline className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Profile",
+    name: "Hồ Sơ",
     link: "/profile",
     icon: <MdOutlineAccountCircle className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Privacy",
+    name: "Bảo Mật",
     link: "/privacy",
     icon: <MdOutlinePrivacyTip className="mr-3 h-5 w-5" />,
   },
@@ -364,27 +364,27 @@ const protectedNavLink = [
 
 const adminNavLink = [
   {
-    name: "Admin Panel",
+    name: "Bảng Quản Lý",
     link: "/admin",
     icon: <MdAdminPanelSettings className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Dashboard",
+    name: "Trang Chủ",
     link: "/",
     icon: <MdOutlineDashboard className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Manage Auctions",
+    name: "Quản Lý Đấu Giá",
     link: "/admin/auctions",
     icon: <RiAuctionLine className="mr-3 h-5 w-5" />,
   },
   {
-    name: "Create Auction",
+    name: "Tạo Đấu Giá",
     link: "/create",
     icon: <MdOutlineCreate className="mr-3 h-5 w-5" />,
   },
   {
-    name: "View Auction",
+    name: "Xem Đấu Giá",
     link: "/auction",
     icon: <RiAuctionLine className="mr-3 h-5 w-5" />,
   },

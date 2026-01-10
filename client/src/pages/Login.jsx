@@ -43,7 +43,7 @@ const Login = () => {
       <main className="flex-grow flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="bg-white p-8 rounded-sm shadow">
-            <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+            <h1 className="text-2xl font-bold mb-6 text-center">Đăng Nhập</h1>
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
@@ -103,23 +103,23 @@ const Login = () => {
                 disabled={loading}
                 className="w-full bg-indigo-800 text-white py-2 px-4 rounded-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Logging in..." : "Login"}
+                {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
               </button>
             </form>
 
             <div className="mt-4 text-center text-sm text-gray-600">
               <Link to="#" className="hover:underline">
-                Forgot your password?
+                Quên mật khẩu?
               </Link>
             </div>
 
             <div className="mt-6 text-center text-sm text-gray-600">
-              Don't have an account?{" "}
+              Chưa có tài khoản?{" "}
               <Link
                 to="/signup"
                 className="text-indigo-800 font-medium hover:underline"
               >
-                Sign up
+                Đăng Ký
               </Link>
             </div>
           </div>

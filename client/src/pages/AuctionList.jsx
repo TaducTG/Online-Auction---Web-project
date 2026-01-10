@@ -29,7 +29,7 @@ export const AuctionList = () => {
         {/* Filters */}
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4 text-gray-900">
-            Filter by Category
+            Lọc theo Danh Mục
           </h2>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
@@ -50,7 +50,7 @@ export const AuctionList = () => {
         {/* Results */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            {filter === "all" ? "All Auctions" : `${filter} Auctions`}
+            {filter === "all" ? "Tất Cả Đấu Giá" : `Đấu Giá ${filter}`}
             <span className="text-sm font-normal text-gray-500 ml-2">
               ({filteredAuctions.length} items)
             </span>
@@ -60,7 +60,7 @@ export const AuctionList = () => {
         {filteredAuctions.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
-              No auctions found in this category.
+              Không tìm thấy phiên đấu giá nào trong danh mục này.
             </p>
           </div>
         ) : (

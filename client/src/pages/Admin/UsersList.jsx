@@ -131,14 +131,14 @@ export const UsersList = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">All Users</h1>
-              <p className="text-gray-600">Manage and monitor all registered users</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Tất Cả Người Dùng</h1>
+              <p className="text-gray-600">Quản lý và giám sát tất cả người dùng đăng ký</p>
             </div>
             <Link
               to="/admin"
               className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
-              Back to Dashboard
+              Quảy Lại Bảng Quản Lý
             </Link>
           </div>
         </div>
@@ -148,12 +148,12 @@ export const UsersList = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
-                Search Users
+                Tìm Kiếm Người Dùng
               </label>
               <input
                 type="text"
                 id="search"
-                placeholder="Search by name or email..."
+                placeholder="Tìm kiếm theo tên hoặc email..."
                 value={searchTerm}
                 onChange={handleSearch}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -161,7 +161,7 @@ export const UsersList = () => {
             </div>
             <div className="flex items-end">
               <div className="text-sm text-gray-600">
-                {pagination.totalUsers ? `${pagination.totalUsers} total users` : ''}
+                {pagination.totalUsers ? `${pagination.totalUsers} tổng cộng người dùng` : ''}
               </div>
             </div>
           </div>
