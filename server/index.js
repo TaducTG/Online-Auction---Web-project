@@ -23,30 +23,16 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 const app = express();
-const allowedOrigins = process.env.ORIGINS
-  ? process.env.ORIGINS.split(",")
-  : process.env.ORIGIN
-    ? [process.env.ORIGIN]
-    : ["http://localhost:5173"];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    return callback(null, false);
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.ORIGIN,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  })
+);
+
 // Serve static files from uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
