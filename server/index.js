@@ -23,8 +23,6 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 const app = express();
-app.use(cookieParser());
-app.use(express.json());
 const allowedOrigins = process.env.ORIGINS
   ? process.env.ORIGINS.split(",")
   : process.env.ORIGIN
@@ -47,7 +45,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
+app.use(cookieParser());
+app.use(express.json());
 // Serve static files from uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
