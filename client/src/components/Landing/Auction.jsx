@@ -9,12 +9,12 @@ export const Auction = () => {
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Live Auctions</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Đấu Giá Trực Tiếp</h2>
           <Link
             to="/signup"
             className="text-gray-700 hover:text-gray-900 flex items-center"
           >
-            View all <FaChevronRight className="h-4 w-4 ml-1" />
+            Xem Tất Cả <FaChevronRight className="h-4 w-4 ml-1" />
           </Link>
         </div>
 
@@ -38,11 +38,11 @@ export const Auction = () => {
               </h3>
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-sm text-gray-500">Current Bid</p>
+                  <p className="text-sm text-gray-500">Giá Hiện Tại</p>
                   <p className="text-lg font-bold text-gray-900">{formatVND(245000)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">Bids</p>
+                  <p className="text-sm text-gray-500">Lượt Đấu</p>
                   <p className="text-sm font-medium text-gray-700">12</p>
                 </div>
               </div>
@@ -73,11 +73,11 @@ export const Auction = () => {
               </h3>
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-sm text-gray-500">Current Bid</p>
+                  <p className="text-sm text-gray-500">Giá Hiện Tại</p>
                   <p className="text-lg font-bold text-gray-900">{formatVND(1250000)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">Bids</p>
+                  <p className="text-sm text-gray-500">Lượt Đấu</p>
                   <p className="text-sm font-medium text-gray-700">28</p>
                 </div>
               </div>
@@ -108,11 +108,11 @@ export const Auction = () => {
               </h3>
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-sm text-gray-500">Current Bid</p>
+                  <p className="text-sm text-gray-500">Giá Hiện Tại</p>
                   <p className="text-lg font-bold text-gray-900">{formatVND(890000)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">Bids</p>
+                  <p className="text-sm text-gray-500">Lượt Đấu</p>
                   <p className="text-sm font-medium text-gray-700">7</p>
                 </div>
               </div>

@@ -131,7 +131,7 @@ export const ViewAuction = () => {
                       : "bg-red-100 text-red-800"
                   }`}
                 >
-                  {isActive ? "Active" : "Ended"}
+                  {isActive ? "Đang diễn ra" : "Đã kết thúc"}
                 </span>
               </div>
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
@@ -206,14 +206,14 @@ export const ViewAuction = () => {
             {/* Bid Form */}
             {data.seller._id != user.user._id && isActive && (
               <div className="bg-white p-6 rounded-md shadow-md border border-gray-200">
-                <h3 className="text-lg font-semibold mb-4">Place Your Bid</h3>
+                <h3 className="text-lg font-semibold mb-4">Đặt Giá Thầu</h3>
                 <form onSubmit={handleBidSubmit} className="space-y-4">
                   <div>
                     <label
                       htmlFor="bidAmount"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Bid Amount (minimum: {formatVND(minBidValue)} maximum:{" "}
+                      Số Tiền Đặt (tối thiểu: {formatVND(minBidValue)} tối đa:{" "}
                       {formatVND(maxBidValue)})
                     </label>
                     <input
@@ -225,7 +225,7 @@ export const ViewAuction = () => {
                       max={maxBidValue}
                       step="1"
                       className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Enter your bid amount"
+                      placeholder="Nhập số tiền đặt giá"
                       required
                     />
                   </div>
@@ -238,7 +238,7 @@ export const ViewAuction = () => {
 
                   {bidSuccess && (
                     <div className="p-3 bg-green-100 text-green-700 rounded-lg flex items-center gap-2">
-                      <FaCheck /> Dat bid thanh cong!
+                      <FaCheck /> Đặt giá thầu thành công!
                     </div>
                   )}
 
@@ -247,7 +247,7 @@ export const ViewAuction = () => {
                     disabled={placeBidMutate.isPending}
                     className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                   >
-                    {placeBidMutate.isPending ? "Dang xu ly..." : "Place Bid"}
+                    {placeBidMutate.isPending ? "Đang xử lý..." : "Đặt Giá Thầu"}
                   </button>
                 </form>
               </div>
@@ -255,7 +255,7 @@ export const ViewAuction = () => {
 
             {/* Seller Info */}
             <div className="bg-white p-6 rounded-md shadow-md border border-gray-200">
-              <h3 className="text-lg font-semibold mb-3">Seller Information</h3>
+              <h3 className="text-lg font-semibold mb-3">Thông Tin Người Bán</h3>
               <p className="text-gray-900 font-medium">{data.seller.name}</p>
             </div>
           </div>
@@ -263,11 +263,11 @@ export const ViewAuction = () => {
 
         {/* Bid History */}
         <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Bid History</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Lịch Sử Đặt Giá</h2>
           <div className="bg-white rounded-md shadow-md border border-gray-200 overflow-hidden">
             {data.bids.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
-                No bids yet. Be the first to bid!
+                Chưa có lượt đặt giá nào. Hãy là người đầu tiên đặt giá!
               </div>
             ) : (
               <div className="divide-y divide-gray-200">

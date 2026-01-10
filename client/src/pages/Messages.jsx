@@ -103,15 +103,15 @@ export default function Messages() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 flex items-center">
                 <MdNotifications className="mr-3 h-8 w-8 text-indigo-600" />
-                Messages & Notifications
+                Nhận Tin & Thông Báo
               </h1>
               <p className="text-gray-600 mt-2">
-                Stay updated on your auctions and bids
+                Cập nhật về phiên đấu giá và lượt đặt giá của bạn
               </p>
             </div>
             {unreadCount > 0 && (
               <div className="bg-red-100 text-red-800 px-4 py-2 rounded-full">
-                <span className="font-semibold">{unreadCount} unread</span>
+                <span className="font-semibold">{unreadCount} chưa đọc</span>
               </div>
             )}
           </div>
@@ -126,12 +126,12 @@ export default function Messages() {
                   className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2"
                 >
                   <MdDoneAll className="h-5 w-5" />
-                  Mark all as read
+                  Đánh dấu tất cả đã đọc
                 </button>
               )}
               <button
                 onClick={() => {
-                  if (window.confirm('Are you sure you want to delete all notifications?')) {
+                  if (window.confirm('Bạn có chắc chắn muốn xóa tất cả thông báo không?')) {
                     deleteAllMutation.mutate();
                   }
                 }}
@@ -139,7 +139,7 @@ export default function Messages() {
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
               >
                 <MdDeleteOutline className="h-5 w-5" />
-                Delete all
+                Xóa tất cả
               </button>
             </div>
           )}
@@ -149,13 +149,13 @@ export default function Messages() {
         <div className="space-y-4">
           {isLoading ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">Loading notifications...</p>
+              <p className="text-gray-500">Đang tải thông báo...</p>
             </div>
           ) : notifications.length === 0 ? (
             <div className="text-center py-12">
               <MdNotifications className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">No notifications yet</p>
-              <p className="text-gray-400">You'll see updates about your auctions and bids here</p>
+              <p className="text-gray-500 text-lg">Chưa có thông báo nào</p>
+              <p className="text-gray-400">Bạn sẽ thấy các cập nhật về phiên đấu giá và lượt đặt giá của bạn ở đây</p>
             </div>
           ) : (
             notifications.map((notification) => (

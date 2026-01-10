@@ -31,10 +31,10 @@ const formatDate = (date) => {
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
 
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffMins < 1) return 'Vừa xong';
+  if (diffMins < 60) return `${diffMins}p trước`;
+  if (diffHours < 24) return `${diffHours}g trước`;
+  if (diffDays < 7) return `${diffDays}ngày trước`;
   
   return notifDate.toLocaleDateString();
 };
@@ -68,7 +68,7 @@ export const NotificationDropdown = () => {
   const unreadCount = notifData?.unreadCount || 0;
   const displayNotifications = notifications.slice(0, 5); // Show only 5 in dropdown
 
-  // Close dropdown when clicking outside
+  // Đóng thả khi nhấp cột khi nhấp ra ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -99,7 +99,7 @@ export const NotificationDropdown = () => {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Notification Bell Button */}
+      {/* Nút chuông thông báo */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 hover:text-gray-900 focus:outline-none rounded-full hover:bg-gray-100 transition-colors"
@@ -113,15 +113,15 @@ export const NotificationDropdown = () => {
         )}
       </button>
 
-      {/* Dropdown Panel */}
+      {/* Bảng điều khiển thā */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[600px] flex flex-col">
-          {/* Header */}
+          {/* Tiêu đề */}
           <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50 rounded-t-lg">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Thông báo</h3>
               {unreadCount > 0 && (
-                <p className="text-sm text-gray-600">{unreadCount} unread</p>
+                <p className="text-sm text-gray-600">{unreadCount} chưa đọc</p>
               )}
             </div>
             {unreadCount > 0 && (
@@ -131,21 +131,21 @@ export const NotificationDropdown = () => {
                 className="text-sm text-indigo-600 hover:text-indigo-800 font-medium disabled:opacity-50 flex items-center gap-1"
               >
                 <MdDoneAll className="h-4 w-4" />
-                Mark all read
+                Đánh dấu tất cả đã đọc
               </button>
             )}
           </div>
 
-          {/* Notifications List */}
+          {/* Danh sách thông báo */}
           <div className="overflow-y-auto flex-1">
             {isLoading ? (
               <div className="p-8 text-center">
-                <p className="text-gray-500">Loading...</p>
+                <p className="text-gray-500">??ang tải...</p>
               </div>
             ) : displayNotifications.length === 0 ? (
               <div className="p-8 text-center">
                 <MdNotifications className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">No notifications</p>
+                <p className="text-gray-500">Không có thông báo</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
@@ -198,14 +198,14 @@ export const NotificationDropdown = () => {
             )}
           </div>
 
-          {/* Footer with View All */}
+          {/* Chân với xem tất cả */}
           {notifications.length > 0 && (
             <div className="p-3 border-t border-gray-200 bg-gray-50 rounded-b-lg">
               <button
                 onClick={handleViewAll}
                 className="w-full py-2 text-center text-indigo-600 hover:text-indigo-800 font-medium text-sm hover:bg-indigo-50 rounded transition-colors"
               >
-                View all notifications
+                Xem tất cả thông báo
               </button>
             </div>
           )}

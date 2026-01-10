@@ -59,8 +59,8 @@ export const AdminDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage auctions, users, and monitor system activity</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Bảng Quản Lý</h1>
+          <p className="text-gray-600">Quản lý phiên đấu giá, người dùng và giám sát hoạt động hệ thống</p>
         </div>
 
         {/* Statistics Cards */}
@@ -70,7 +70,7 @@ export const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                    Active Auctions
+                    Đấu Giá Đang Họa
                   </h3>
                   <p className="text-2xl font-bold text-gray-900 mt-2">
                     {dashboardData.stats.activeAuctions || 0}
@@ -88,7 +88,7 @@ export const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                    Total Auctions
+                    Tổng Cộng Đấu Giá
                   </h3>
                   <p className="text-2xl font-bold text-gray-900 mt-2">
                     {dashboardData.stats.totalAuctions || 0}
@@ -106,7 +106,7 @@ export const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                    Total Users
+                    Tổng Cộng Người Dùng
                   </h3>
                   <p className="text-2xl font-bold text-gray-900 mt-2">
                     {dashboardData.stats.totalUsers || 0}
@@ -124,7 +124,7 @@ export const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                    Recent Signups
+                    Đăng Ký Gần Đây
                   </h3>
                   <p className="text-2xl font-bold text-gray-900 mt-2">
                     {dashboardData.stats.recentUsers || 0}
@@ -144,18 +144,18 @@ export const AdminDashboard = () => {
         {dashboardData && (
           <div className="mb-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Recent Active Auctions</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Phiên Đấu Giá Đang Hoạt Động Gần Đây</h2>
               <Link
                 to="/auctionlist"
                 className="text-blue-600 hover:text-blue-700 font-medium text-sm hover:underline"
               >
-                View All Auctions
+                Xem Tất Cả Đấu Giá
               </Link>
             </div>
 
             {!dashboardData.recentAuctions || dashboardData.recentAuctions.length === 0 ? (
               <div className="text-center py-12 bg-white rounded-sm shadow-sm border border-gray-200">
-                <p className="text-gray-500 text-lg">No active auctions at the moment.</p>
+                <p className="text-gray-500 text-lg">Không có phiên đấu giá đang hoạt động lúc này.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-4">
@@ -170,24 +170,24 @@ export const AdminDashboard = () => {
         {/* User Management Section */}
         <div>
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Recent Users</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Người Dùng Gần Đây</h2>
             <Link
               to="/admin/users"
               className="text-blue-600 hover:text-blue-700 font-medium text-sm hover:underline"
             >
-              View All Users
+              Xem Tất Cả Người Dùng
             </Link>
           </div>
 
           {/* Users Table */}
           <div className="bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">Latest 10 Users</h3>
+              <h3 className="text-lg font-medium text-gray-900">10 Người Dùng Mới Nhất</h3>
             </div>
             
             {!users || users.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-500">No users found matching your criteria.</p>
+                <p className="text-gray-500">Không tìm thấy người dùng nào phù hợp với tiêu chí của bạn.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">

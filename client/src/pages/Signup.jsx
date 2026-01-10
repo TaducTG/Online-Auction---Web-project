@@ -46,7 +46,7 @@ const Signup = () => {
         <div className="w-full max-w-md">
           <div className="bg-white p-8 rounded-sm shadow">
             <h1 className="text-2xl font-bold mb-6 text-center">
-              Create an Account
+              Tạo Một Tài Khoản Mới
             </h1>
 
             <form onSubmit={handleSubmit}>
@@ -55,7 +55,7 @@ const Signup = () => {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Full Name
+                  Họ và Tên
                 </label>
                 <input
                   id="name"
@@ -119,7 +119,7 @@ const Signup = () => {
                   minLength={8}
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  Password must be at least 8 characters long
+                  Mật khẩu phải có ít nhất 8 ký tự
                 </p>
               </div>
 
@@ -134,17 +134,17 @@ const Signup = () => {
                 disabled={loading}
                 className="w-full bg-indigo-800 text-white py-2 px-4 rounded-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Creating account..." : "Sign Up"}
+                {loading ? "Ang tạo tài khoản..." : "Đăng Ký"}
               </button>
             </form>
 
             <div className="mt-6 text-center text-sm text-gray-600">
-              Already have an account?{" "}
+              Đã có tài khoản?{" "}
               <Link
                 to="/login"
                 className="text-indigo-800 font-medium hover:underline"
               >
-                Login
+                Đăng Nhập
               </Link>
             </div>
           </div>
