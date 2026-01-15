@@ -23,9 +23,13 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 const app = express();
-const allowedOrigins = process.env.ORIGINS
-  ? process.env.ORIGINS.split(",")
-  : [];
+const envOrigins = process.env.ORIGINS ? process.env.ORIGINS.split(",") : [];
+const allowedOrigins = [
+  ...envOrigins,
+  "https://online-auction-web-project.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000"
+];
 
 const corsOptions = {
   origin: (origin, callback) => {
