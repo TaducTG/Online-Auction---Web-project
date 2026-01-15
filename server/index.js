@@ -23,6 +23,7 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 const app = express();
+app.set("trust proxy", 1);
 const envOrigins = process.env.ORIGINS ? process.env.ORIGINS.split(",") : [];
 const allowedOrigins = [
   ...envOrigins,
